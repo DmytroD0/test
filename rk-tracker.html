@@ -1,0 +1,452 @@
+<title>РК Трекер</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@600&display=swap">
+<style>
+/* Layout: top bar + summary strip, then a soc-account rail on the left and grouped RK tables on the right; edits happen in a right drawer. */
+:root{
+  --bg:#f2f3f7; --surface:#ffffff; --sunk:#f7f8fb; --ink:#1b2030; --muted:#636a7e; --line:#dde0e9;
+  --accent:#2c4fc9; --accent-ink:#ffffff; --accent-soft:#e7ecfb;
+  --ok:#1d8f4e; --ok-soft:#e1f4e8; --warn:#b06f08; --warn-soft:#fbf0dc; --stop:#8b92a5; --stop-soft:#eceef3; --danger:#c43c3c;
+  --f-display:"Unbounded","IBM Plex Sans",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --r:8px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11141b; --surface:#191d26; --sunk:#151820; --ink:#e5e8f0; --muted:#949bb0; --line:#2a303d;
+  --accent:#7d9bff; --accent-ink:#0f1320; --accent-soft:#1f2842;
+  --ok:#43c97f; --ok-soft:#163223; --warn:#e7a43c; --warn-soft:#3a2c14; --stop:#8890a3; --stop-soft:#252a35; --danger:#ef6b6b;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11141b; --surface:#191d26; --sunk:#151820; --ink:#e5e8f0; --muted:#949bb0; --line:#2a303d;
+  --accent:#7d9bff; --accent-ink:#0f1320; --accent-soft:#1f2842;
+  --ok:#43c97f; --ok-soft:#163223; --warn:#e7a43c; --warn-soft:#3a2c14; --stop:#8890a3; --stop-soft:#252a35; --danger:#ef6b6b;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:14px/1.45 var(--f-body)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.app{max-width:1440px;margin:0 auto;padding:16px 16px 48px;display:flex;flex-direction:column;gap:14px}
+
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
+.brand{font:600 17px/1 var(--f-display);letter-spacing:.01em;margin-right:4px}
+.brand span{color:var(--accent)}
+.tabs{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:3px;gap:2px}
+.tabs button{border:0;background:none;padding:6px 12px;border-radius:6px;color:var(--muted);font-weight:500;display:flex;gap:6px;align-items:center}
+.tabs button[aria-pressed="true"]{background:var(--accent-soft);color:var(--ink)}
+.tabs b{font:500 11px/1 var(--f-mono);background:var(--accent);color:var(--accent-ink);border-radius:10px;padding:3px 6px}
+.search{flex:1 1 220px;min-width:0;padding:8px 12px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:6px 11px;font-weight:500;white-space:nowrap}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.ghost{border-color:transparent;background:none;color:var(--muted);padding:4px 8px}
+.btn.ghost:hover{color:var(--ink);background:var(--sunk)}
+.btn.danger{color:var(--danger)}
+.btn.danger.armed{background:var(--danger);border-color:var(--danger);color:#fff}
+
+.mode{font-size:13px;color:var(--warn);background:var(--warn-soft);border-radius:var(--r);padding:8px 12px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px 14px}
+.stat .n{font:500 22px/1.1 var(--f-mono);font-variant-numeric:tabular-nums}
+.stat .n small{font-size:13px;color:var(--muted)}
+.stat .l{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:16px;align-items:start}
+.side{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);display:flex;flex-direction:column;gap:14px}
+.side h4{margin:0 0 6px;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:600}
+.socnav{display:flex;flex-direction:column;gap:2px}
+.socnav button{display:flex;justify-content:space-between;gap:8px;align-items:center;text-align:left;border:0;background:none;padding:7px 10px;border-radius:6px}
+.socnav button:hover{background:var(--surface)}
+.socnav button[aria-pressed="true"]{background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);font-weight:600}
+.socnav .cnt{font:12px var(--f-mono);color:var(--muted)}
+.socnav .cnt.t{color:var(--warn)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{border:1px solid var(--line);background:var(--surface);border-radius:20px;padding:4px 10px;font-size:13px}
+.chips button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+
+.main{display:flex;flex-direction:column;gap:18px;min-width:0}
+.soc{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.soc-h{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.soc-h h2{margin:0;font-size:17px;font-weight:600;text-wrap:balance}
+.soc-h .meta{color:var(--muted);font-size:13px;margin-right:auto}
+.soc-note{padding:8px 16px;color:var(--muted);font-size:13px;border-bottom:1px solid var(--line);background:var(--sunk)}
+.bm + .bm{border-top:1px solid var(--line)}
+.bm-h{display:flex;align-items:center;gap:8px;padding:10px 16px 6px}
+.bm-h h3{margin:0;font-size:14px;font-weight:600;margin-right:auto;display:flex;gap:8px;align-items:baseline}
+.tag{font:500 10px/1 var(--f-mono);letter-spacing:.06em;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:3px 5px}
+.tbl{overflow-x:auto;padding:0 8px 10px}
+table{width:100%;border-collapse:collapse;min-width:820px}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;text-align:left;padding:6px 8px;white-space:nowrap}
+td{padding:8px;border-top:1px solid var(--line);vertical-align:top}
+tbody tr{cursor:pointer}
+tbody tr:hover td{background:var(--sunk)}
+tr.st-stop td{color:var(--muted)}
+.code{font:500 13px var(--f-mono);white-space:nowrap;display:flex;gap:7px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--stop)}
+.st-active .dot{background:var(--ok)} .st-prep .dot{background:var(--warn)}
+.mono{font-family:var(--f-mono);font-size:12.5px;font-variant-numeric:tabular-nums;color:var(--muted)}
+.offer{font-weight:500;word-break:break-word}
+.link{color:var(--accent);text-decoration:none;font-size:13px;word-break:break-all}
+.link:hover{text-decoration:underline}
+.appr{display:inline-block;background:var(--accent-soft);border-radius:4px;padding:1px 6px;font-size:12.5px;white-space:nowrap}
+.tasks-cell{font-size:13px;max-width:280px}
+.tasks-cell .more{color:var(--muted);font-size:12px}
+.tn{display:inline-block;font:500 11px/1 var(--f-mono);color:var(--warn);background:var(--warn-soft);border-radius:4px;padding:3px 5px;margin-right:6px}
+.empty-row td{color:var(--muted);cursor:default;font-size:13px}
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:10px;padding:32px 20px;text-align:center;color:var(--muted);display:flex;flex-direction:column;gap:12px;align-items:center}
+.empty strong{color:var(--ink);font-size:16px}
+
+/* tasks view */
+.tv-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tv-bar label{display:flex;gap:6px;align-items:center;color:var(--muted);font-size:13px;margin-right:auto}
+.tv-soc{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 16px;display:flex;flex-direction:column;gap:10px}
+.tv-soc h2{margin:0;font-size:16px}
+.tv-bm h3{margin:0 0 4px;font-size:13px;color:var(--muted);font-weight:600}
+.tv-line{display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:4px 10px;align-items:start;padding:5px 0;border-top:1px solid var(--line)}
+.tv-line:first-of-type{border-top:0}
+.tv-rk{font:500 13px var(--f-mono);background:none;border:0;padding:0;color:var(--accent);text-align:left}
+.tv-tasks{display:flex;flex-direction:column;gap:3px;min-width:0}
+.task{display:flex;gap:8px;align-items:flex-start}
+.task input{margin-top:3px;accent-color:var(--ok)}
+.task.done span{text-decoration:line-through;color:var(--muted)}
+.copybox{width:100%;min-height:160px;font:13px var(--f-mono);padding:10px;border:1px solid var(--line);border-radius:var(--r);background:var(--sunk)}
+
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(10,12,20,.35);z-index:10}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(460px,100%);background:var(--surface);border-left:1px solid var(--line);z-index:11;overflow-y:auto;
+  padding:calc(env(safe-area-inset-top,0px) + 16px) 20px calc(env(safe-area-inset-bottom,0px) + 24px);display:flex;flex-direction:column;gap:14px;box-shadow:-12px 0 32px rgba(0,0,0,.12)}
+.d-h{display:flex;align-items:center;gap:10px}
+.d-h .crumb{font-size:12px;color:var(--muted);margin-right:auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.d-title{margin:0;font-size:20px;font-weight:600}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+.f{display:flex;flex-direction:column;gap:4px;min-width:0}
+.f.w{grid-column:1/-1}
+.f label{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+.f input,.f select,.f textarea{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--sunk)}
+.f textarea{min-height:64px;resize:vertical}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--accent);background:var(--surface);outline:none}
+.d-sec{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);padding-top:14px}
+.d-sec h4{margin:0;font-size:13px;font-weight:600}
+.d-task{display:flex;gap:8px;align-items:flex-start;padding:4px 0}
+.d-task input[type=checkbox]{margin-top:4px;accent-color:var(--ok)}
+.d-task span{flex:1;min-width:0;word-break:break-word}
+.d-task.done span{text-decoration:line-through;color:var(--muted)}
+.add-task{display:flex;gap:8px}
+.add-task input{flex:1;min-width:0;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--sunk)}
+.d-foot{display:flex;justify-content:space-between;gap:8px;margin-top:auto;padding-top:14px;border-top:1px solid var(--line)}
+.saved{font-size:12px;color:var(--ok);align-self:center}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 18px);background:var(--ink);color:var(--bg);padding:9px 14px;border-radius:8px;z-index:20;font-size:13px;max-width:calc(100% - 32px)}
+
+@media (max-width:860px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .side{position:static}
+  .socnav{flex-direction:row;flex-wrap:wrap;gap:6px}
+  .socnav button{border:1px solid var(--line);background:var(--surface);padding:5px 10px}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:480px){ .form{grid-template-columns:minmax(0,1fr)} }
+@media (prefers-reduced-motion:no-preference){ .drawer{animation:slide .16s ease-out} @keyframes slide{from{transform:translateX(24px);opacity:.6}} }
+</style>
+
+<div class="app">
+  <header class="top">
+    <div class="brand">РК<span>·</span>трекер</div>
+    <nav class="tabs" aria-label="Вигляд">
+      <button id="tab-acc" data-view="acc" aria-pressed="true">Аккаунти</button>
+      <button id="tab-tasks" data-view="tasks" aria-pressed="false">Задачі <b id="taskCount">0</b></button>
+    </nav>
+    <input id="q" class="search" type="search" placeholder="Пошук: офер, силка, сторінка, задача…" aria-label="Пошук">
+    <button id="addSoc" class="btn primary">+ Соц аккаунт</button>
+  </header>
+  <div id="mode" class="mode" hidden></div>
+  <section id="stats" class="stats" aria-label="Підсумок"></section>
+  <div class="layout">
+    <aside id="side" class="side"></aside>
+    <main id="main" class="main"><div class="empty"><strong>Завантажую аккаунти…</strong></div></main>
+  </div>
+</div>
+<div id="scrim" class="scrim" hidden></div>
+<aside id="drawer" class="drawer" hidden aria-label="Редагування"></aside>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+const COLS=['socs','bms','rks'];
+const S={socs:new Map(),bms:new Map(),rks:new Map()};
+const ui={view:'acc',soc:'all',status:'all',q:'',showDone:false,open:null};
+const STATUS={active:'Працює',prep:'Готується',stop:'Стоп'};
+const LS='rk-tracker-v1';
+let db=null, ready=false, local=false;
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-5);
+const byOrder=(a,b)=>(a[1].order||0)-(b[1].order||0);
+const socsSorted=()=>[...S.socs].sort(byOrder);
+const bmsOf=sid=>[...S.bms].filter(([,b])=>b.soc===sid).sort(byOrder);
+const rkNum=r=>parseInt(String(r.code||'').replace(/\D/g,''))||999;
+const rksOf=bid=>[...S.rks].filter(([,r])=>r.bm===bid).sort((a,b)=>rkNum(a[1])-rkNum(b[1])||(a[1].order||0)-(b[1].order||0));
+const openTasks=r=>(r.tasks||[]).filter(t=>!t.done);
+
+function toast(msg){const t=$('#toast');t.textContent=msg;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,2600)}
+
+/* ---------- persistence ---------- */
+const queues={};
+function persist(col,id,data){
+  if(local){saveLocal();return}
+  if(!db)return;
+  const key=col+'/'+id;
+  queues[key]=(queues[key]||Promise.resolve()).then(()=>data?db.collection(col).doc(id).set(data):db.collection(col).doc(id).delete())
+    .catch(e=>toast('Не збереглося: '+(e&&(e.message||e.code)||'помилка')+'. Спробуй ще раз.'));
+}
+function put(col,id,data){S[col].set(id,data);persist(col,id,data);render()}
+function patch(col,id,fields){const cur=S[col].get(id);if(!cur)return;put(col,id,{...cur,...fields})}
+function del(col,id){S[col].delete(id);persist(col,id,null);render()}
+function saveLocal(){try{localStorage.setItem(LS,JSON.stringify(Object.fromEntries(COLS.map(c=>[c,[...S[c]]]))))}catch(e){}}
+function loadLocal(){try{const d=JSON.parse(localStorage.getItem(LS)||'null');if(d)COLS.forEach(c=>S[c]=new Map(d[c]||[]))}catch(e){}}
+
+/* ---------- filtering ---------- */
+function rkMatches(r){
+  if(ui.status!=='all'&&(r.status||'prep')!==ui.status)return false;
+  if(!ui.q)return true;
+  const hay=[r.code,r.accId,r.offer,r.approach,r.link,r.creo,r.structure,r.notes,r.page,...(r.tasks||[]).map(t=>t.text)].join(' ').toLowerCase();
+  return hay.includes(ui.q);
+}
+function nameMatch(...n){return ui.q&&n.join(' ').toLowerCase().includes(ui.q)}
+
+/* ---------- render ---------- */
+function render(){
+  const allRks=[...S.rks.values()];
+  const open=allRks.reduce((n,r)=>n+openTasks(r).length,0);
+  $('#taskCount').textContent=open;
+  $('#stats').innerHTML=[
+    [S.socs.size,'Соц аккаунти'],[S.bms.size,'БМ'],
+    [`${allRks.filter(r=>r.status==='active').length}<small> / ${allRks.length}</small>`,'РК працюють'],
+    [open,'Відкриті задачі']].map(([n,l])=>`<div class="stat"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+  renderSide();
+  if(!ready){return}
+  ui.view==='acc'?renderAcc():renderTasks();
+  if(ui.open&&!$('#drawer').hidden)refreshDrawerTasks();
+}
+
+function renderSide(){
+  const btn=(id,name,cnt,t)=>`<button data-soc="${id}" aria-pressed="${ui.soc===id}"><span>${esc(name)}</span><span class="cnt${t?' t':''}">${cnt}</span></button>`;
+  let h=`<div><h4>Соц аккаунти</h4><div class="socnav">${btn('all','Всі',S.socs.size)}`;
+  for(const [id,s] of socsSorted()){
+    const bms=bmsOf(id).map(b=>b[0]);
+    const t=[...S.rks.values()].filter(r=>bms.includes(r.bm)).reduce((n,r)=>n+openTasks(r).length,0);
+    h+=btn(id,s.name||'Без назви',t?t+' зад.':bms.length+' БМ',t);
+  }
+  h+=`</div></div><div><h4>Статус РК</h4><div class="chips">`+
+    [['all','Всі'],['active','Працює'],['prep','Готується'],['stop','Стоп']].map(([k,l])=>`<button data-status="${k}" aria-pressed="${ui.status===k}">${l}</button>`).join('')+`</div></div>`;
+  $('#side').innerHTML=h;
+}
+
+function visibleSocs(){return socsSorted().filter(([id])=>ui.soc==='all'||ui.soc===id)}
+
+function renderAcc(){
+  const socs=visibleSocs();
+  if(!S.socs.size){$('#main').innerHTML=`<div class="empty"><strong>Ще немає жодного соц аккаунта</strong><span>Додай соц аккаунт, у ньому БМ, а в БМ рекламні кабінети з офером, силкою і сторінкою.</span><button class="btn primary" data-act="addSoc">+ Соц аккаунт</button></div>`;return}
+  const filtering=ui.q||ui.status!=='all';
+  let h='';
+  for(const [sid,s] of socs){
+    const socHit=nameMatch(s.name);
+    let bmH='',shown=0;
+    const bms=bmsOf(sid);
+    for(const [bid,b] of bms){
+      const bmHit=socHit||nameMatch(b.name);
+      const rks=rksOf(bid).filter(([,r])=>bmHit&&ui.status==='all'?true:(ui.status==='all'||(r.status||'prep')===ui.status)&&(bmHit||rkMatches(r)));
+      if(filtering&&!rks.length&&!bmHit)continue;
+      shown++;
+      bmH+=`<div class="bm"><div class="bm-h"><h3><span class="tag">БМ</span>${esc(b.name||'Без назви')}</h3>
+        <button class="btn ghost" data-edit="bms:${bid}">Змінити</button><button class="btn" data-addrk="${bid}">+ РК</button></div>
+        <div class="tbl"><table><thead><tr><th>РК</th><th>ID</th><th>Офер / ленд</th><th>Підхід</th><th>Силка</th><th>Крео</th><th>Сторінка</th><th>Задачі</th></tr></thead><tbody>
+        ${rks.length?rks.map(([rid,r])=>rowHtml(rid,r)).join(''):`<tr class="empty-row"><td colspan="8">Немає РК. Натисни «+ РК».</td></tr>`}
+        </tbody></table></div></div>`;
+    }
+    if(filtering&&!shown&&!socHit)continue;
+    const nRk=bms.reduce((n,[bid])=>n+rksOf(bid).length,0);
+    h+=`<section class="soc"><div class="soc-h"><h2>${esc(s.name||'Без назви')}</h2><span class="meta">${bms.length} БМ · ${nRk} РК</span>
+      <button class="btn ghost" data-edit="socs:${sid}">Змінити</button><button class="btn" data-addbm="${sid}">+ БМ</button></div>
+      ${s.note?`<div class="soc-note">${esc(s.note)}</div>`:''}
+      ${bmH||`<div class="bm"><div class="bm-h"><h3 style="color:var(--muted);font-weight:400">Немає БМ у цьому аккаунті</h3></div></div>`}</section>`;
+  }
+  $('#main').innerHTML=h||`<div class="empty"><strong>Нічого не знайдено</strong><span>Зміни пошук або фільтр статусу.</span></div>`;
+}
+
+function linkHtml(u){
+  if(!u)return '';
+  if(!/^https?:\/\//i.test(u))return `<span class="mono">${esc(u)}</span>`;
+  let host=u;try{const x=new URL(u);host=x.hostname+(x.pathname.length>1?x.pathname.replace(/\/$/,''):'')}catch(e){}
+  return `<a class="link" href="${esc(u)}" target="_blank" rel="noopener" data-stop>${esc(host)}</a>`;
+}
+function rowHtml(rid,r){
+  const st=r.status||'prep', ot=openTasks(r);
+  return `<tr class="st-${st}" data-rk="${rid}" tabindex="0">
+    <td><span class="code"><span class="dot" title="${STATUS[st]}"></span>${esc(r.code||'—')}</span></td>
+    <td class="mono">${esc(r.accId)}</td>
+    <td class="offer">${esc(r.offer)}${r.notes?` <span class="mono" title="${esc(r.notes)}">· нотатка</span>`:''}</td>
+    <td>${r.approach?`<span class="appr">${esc(r.approach)}</span>`:''}</td>
+    <td>${linkHtml(r.link)}</td>
+    <td>${esc(r.creo)}</td>
+    <td>${esc(r.page)}</td>
+    <td class="tasks-cell">${ot.length?`<span class="tn">${ot.length}</span>${esc(ot[0].text)}${ot.length>1?` <span class="more">+${ot.length-1}</span>`:''}`:''}</td></tr>`;
+}
+
+function renderTasks(){
+  let h=`<div class="tv-bar"><label><input id="showDone" type="checkbox" ${ui.showDone?'checked':''}> Показати виконані</label>
+    <button class="btn" data-act="copyReport">Скопіювати як нотатку</button><button class="btn ghost" data-act="clearDone">Прибрати виконані</button></div><div id="copyWrap"></div>`;
+  let any=false;
+  for(const [sid,s] of visibleSocs()){
+    let sh='';
+    for(const [bid,b] of bmsOf(sid)){
+      let bh='';
+      for(const [rid,r] of rksOf(bid)){
+        const ts=(r.tasks||[]).filter(t=>(ui.showDone||!t.done)&&(!ui.q||nameMatch(t.text,r.code,r.approach,r.offer,b.name,s.name)));
+        if(!ts.length)continue;
+        bh+=`<div class="tv-line"><button class="tv-rk" data-open="${rid}">${esc(r.code||'РК')}</button>${r.approach?`<span class="appr">${esc(r.approach)}</span>`:'<span></span>'}
+          <div class="tv-tasks">${ts.map(t=>`<label class="task${t.done?' done':''}"><input type="checkbox" data-toggle="${rid}:${t.id}" ${t.done?'checked':''}><span>${esc(t.text)}</span></label>`).join('')}</div></div>`;
+      }
+      if(bh)sh+=`<div class="tv-bm"><h3>БМ · ${esc(b.name)}</h3>${bh}</div>`;
+    }
+    if(sh){any=true;h+=`<section class="tv-soc"><h2>${esc(s.name)}</h2>${sh}</section>`}
+  }
+  if(!any)h+=`<div class="empty"><strong>Відкритих задач немає</strong><span>Задачі додаються в картці РК: відкрий будь-який РК в «Аккаунтах».</span></div>`;
+  $('#main').innerHTML=h;
+}
+
+function reportText(){
+  const out=[];
+  for(const [sid,s] of visibleSocs()){
+    const lines=[];
+    for(const [bid,b] of bmsOf(sid)){
+      const bl=[];
+      for(const [,r] of rksOf(bid)){const ot=openTasks(r);if(ot.length)bl.push(`${r.code}${r.approach?' - '+r.approach:''} - ${ot.map(t=>t.text).join('; ')}`)}
+      if(bl.length)lines.push(`БМ - ${b.name}`,...bl);
+    }
+    if(lines.length)out.push([s.name,...lines].join('\n'));
+  }
+  return out.join('\n\n');
+}
+
+/* ---------- drawer ---------- */
+function field(k,label,val,opts={}){
+  const id='f-'+k;
+  if(opts.select)return `<div class="f${opts.w?' w':''}"><label for="${id}">${label}</label><select id="${id}" data-f="${k}">${opts.select.map(([v,l])=>`<option value="${esc(v)}" ${v===val?'selected':''}>${esc(l)}</option>`).join('')}</select></div>`;
+  if(opts.area)return `<div class="f w"><label for="${id}">${label}</label><textarea id="${id}" data-f="${k}" placeholder="${esc(opts.ph||'')}">${esc(val)}</textarea></div>`;
+  return `<div class="f${opts.w?' w':''}"><label for="${id}">${label}</label><input id="${id}" data-f="${k}" value="${esc(val)}" placeholder="${esc(opts.ph||'')}"></div>`;
+}
+function openDrawer(col,id,focusName){
+  ui.open={col,id};const d=$('#drawer');const o=S[col].get(id);if(!o)return closeDrawer();
+  let h='',title='',crumb='',kind='';
+  if(col==='socs'){kind='Соц аккаунт';title=o.name;crumb='Соц аккаунт';
+    h=`<div class="form">${field('name','Назва',o.name,{w:1,ph:'Напр. Zoryana Prokopenko'})}${field('note','Нотатка',o.note,{area:1,ph:'Логін, проксі, стан аккаунта…'})}</div>`;
+  }else if(col==='bms'){kind='БМ';title=o.name;const s=S.socs.get(o.soc);crumb=s?s.name:'';
+    h=`<div class="form">${field('name','Назва БМ',o.name,{w:1})}${field('soc','Соц аккаунт',o.soc,{w:1,select:socsSorted().map(([i,x])=>[i,x.name])})}${field('note','Нотатка',o.note,{area:1})}</div>`;
+  }else{kind='РК';const b=S.bms.get(o.bm),s=b&&S.socs.get(b.soc);title=o.code||'РК';crumb=[s&&s.name,b&&b.name].filter(Boolean).join(' › ');
+    const bmOpts=[];for(const [si,sx] of socsSorted())for(const [bi,bx] of bmsOf(si))bmOpts.push([bi,sx.name+' › '+bx.name]);
+    h=`<div class="form">
+      ${field('code','РК',o.code,{ph:'RK1'})}${field('accId','ID',o.accId,{ph:'2053'})}
+      ${field('status','Статус',o.status||'prep',{select:Object.entries(STATUS)})}${field('approach','Підхід',o.approach,{ph:'ТН зір, МХ суглоби…'})}
+      ${field('offer','Офер / ленд',o.offer,{w:1,ph:'th_vitaberry_man_vet_bf'})}
+      ${field('link','Силка',o.link,{w:1,ph:'https://…'})}
+      ${field('page','Сторінка',o.page,{ph:'Moore Care'})}${field('creo','Крео',o.creo,{ph:'діти, піксар…'})}
+      ${field('structure','Структура запуску',o.structure,{area:1,ph:'СВО 1-3-1, бюджет, кількість адсетів…'})}
+      ${field('notes','Нотатки',o.notes,{area:1})}
+      ${field('bm','БМ',o.bm,{w:1,select:bmOpts})}
+    </div>
+    <div class="d-sec"><h4>Задачі</h4><div id="dTasks"></div>
+      <form class="add-task" id="addTask"><input id="newTask" placeholder="Що зробити: масштаб бюджетами, унікалізація…" aria-label="Нова задача"><button class="btn primary">Додати</button></form></div>`;
+  }
+  d.innerHTML=`<div class="d-h"><span class="crumb">${esc(crumb||kind)}</span><span class="saved" id="saved" hidden>Збережено</span><button class="btn ghost" data-act="close" aria-label="Закрити">✕</button></div>
+    <h2 class="d-title" id="dTitle">${esc(title||kind)}</h2>${h}
+    <div class="d-foot"><button class="btn danger" data-act="delete">Видалити ${kind}</button><button class="btn" data-act="close">Готово</button></div>`;
+  d.hidden=false;$('#scrim').hidden=false;
+  if(col==='rks')refreshDrawerTasks();
+  if(focusName){const f=d.querySelector('[data-f="name"],[data-f="offer"]');f&&(f.focus(),f.select&&f.select())}
+}
+function refreshDrawerTasks(){
+  if(!ui.open||ui.open.col!=='rks')return;const box=$('#dTasks');if(!box)return;
+  const r=S.rks.get(ui.open.id);if(!r)return closeDrawer();
+  const ts=r.tasks||[];
+  box.innerHTML=ts.length?ts.map(t=>`<div class="d-task${t.done?' done':''}"><input type="checkbox" data-toggle="${ui.open.id}:${t.id}" ${t.done?'checked':''} aria-label="Виконано"><span>${esc(t.text)}</span><button class="btn ghost" data-deltask="${t.id}" aria-label="Видалити задачу">✕</button></div>`).join(''):`<div class="mono">Задач немає</div>`;
+}
+function closeDrawer(){ui.open=null;$('#drawer').hidden=true;$('#scrim').hidden=true}
+
+/* ---------- actions ---------- */
+function addSoc(){const id=uid();put('socs',id,{name:'Новий соц аккаунт',note:'',order:Date.now()});openDrawer('socs',id,true)}
+function addBm(sid){const id=uid();put('bms',id,{soc:sid,name:'Новий БМ',note:'',order:Date.now()});openDrawer('bms',id,true)}
+function addRk(bid){const n=rksOf(bid).reduce((m,[,r])=>Math.max(m,rkNum(r)===999?0:rkNum(r)),0)+1;const id=uid();
+  put('rks',id,{bm:bid,code:'RK'+n,accId:'',status:'prep',offer:'',approach:'',link:'',creo:'',structure:'',notes:'',page:'',tasks:[],order:Date.now()});openDrawer('rks',id,true)}
+function toggleTask(rid,tid){const r=S.rks.get(rid);if(!r)return;patch('rks',rid,{tasks:(r.tasks||[]).map(t=>t.id===tid?{...t,done:!t.done}:{...t})})}
+let armed=null;
+function deleteOpen(btn){
+  const {col,id}=ui.open;
+  if(armed!==btn){armed=btn;btn.classList.add('armed');
+    let extra='';if(col==='socs'){const b=bmsOf(id);extra=` разом з ${b.length} БМ`}else if(col==='bms'){extra=` разом з ${rksOf(id).length} РК`}
+    btn.textContent='Точно видалити'+extra+'?';return}
+  if(col==='socs'){for(const [bid] of bmsOf(id)){for(const [rid] of rksOf(bid))del('rks',rid);del('bms',bid)}}
+  if(col==='bms'){for(const [rid] of rksOf(id))del('rks',rid)}
+  del(col,id);closeDrawer();toast('Видалено');armed=null;
+}
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button,a,tr[data-rk],input[type=checkbox]');if(!t)return;
+  if(t.matches('a[data-stop]'))return;
+  const ds=t.dataset;
+  if(ds.view){ui.view=ds.view;document.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.view===ui.view));render();return}
+  if(ds.soc){ui.soc=ds.soc;render();return}
+  if(ds.status){ui.status=ds.status;render();return}
+  if(ds.edit){const [c,i]=ds.edit.split(':');openDrawer(c,i);return}
+  if(ds.addbm){addBm(ds.addbm);return}
+  if(ds.addrk){addRk(ds.addrk);return}
+  if(ds.rk){openDrawer('rks',ds.rk);return}
+  if(ds.open){openDrawer('rks',ds.open);return}
+  if(ds.toggle){const [r,i]=ds.toggle.split(':');toggleTask(r,i);return}
+  if(ds.deltask){const r=S.rks.get(ui.open.id);patch('rks',ui.open.id,{tasks:(r.tasks||[]).filter(x=>x.id!==ds.deltask).map(x=>({...x}))});return}
+  if(t.id==='addSoc'||ds.act==='addSoc'){addSoc();return}
+  if(ds.act==='close'){closeDrawer();return}
+  if(ds.act==='delete'){deleteOpen(t);return}
+  if(ds.act==='clearDone'){for(const [rid,r] of S.rks)if((r.tasks||[]).some(x=>x.done))patch('rks',rid,{tasks:r.tasks.filter(x=>!x.done).map(x=>({...x}))});toast('Виконані прибрано');return}
+  if(ds.act==='copyReport'){const txt=reportText();const done=()=>toast('Скопійовано');
+    const fallback=()=>{const w=$('#copyWrap');w.innerHTML='<textarea class="copybox" id="copyBox" readonly></textarea>';const b=$('#copyBox');b.value=txt;b.select();toast('Виділи і скопіюй текст')};
+    try{navigator.clipboard.writeText(txt).then(done,fallback)}catch(err){fallback()}return}
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&ui.open)closeDrawer();
+  if(e.key==='Enter'&&e.target.matches('tr[data-rk]'))openDrawer('rks',e.target.dataset.rk);
+});
+$('#scrim').addEventListener('click',closeDrawer);
+$('#drawer').addEventListener('change',e=>{
+  const k=e.target.dataset.f;if(!k||!ui.open)return;
+  let v=e.target.value;if(e.target.tagName!=='SELECT')v=v.trim();
+  patch(ui.open.col,ui.open.id,{[k]:v});
+  if(k==='name'||k==='code')$('#dTitle').textContent=v||'Без назви';
+  const s=$('#saved');s.hidden=false;clearTimeout(s.t);s.t=setTimeout(()=>s.hidden=true,1400);
+});
+$('#drawer').addEventListener('submit',e=>{
+  e.preventDefault();const inp=$('#newTask');const v=inp.value.trim();if(!v||!ui.open)return;
+  const r=S.rks.get(ui.open.id);patch('rks',ui.open.id,{tasks:[...(r.tasks||[]).map(x=>({...x})),{id:uid(),text:v,done:false}]});inp.value='';inp.focus();
+});
+document.addEventListener('change',e=>{if(e.target.id==='showDone'){ui.showDone=e.target.checked;render()}});
+let qt;$('#q').addEventListener('input',e=>{clearTimeout(qt);qt=setTimeout(()=>{ui.q=e.target.value.trim().toLowerCase();render()},120)});
+
+/* ---------- boot ---------- */
+render();
+(async()=>{
+  try{db=window.claude&&window.claude.use?await window.claude.use('db'):null}catch(e){db=null}
+  if(!db){
+    local=true;loadLocal();ready=true;
+    const m=$('#mode');m.hidden=false;m.textContent='Спільна база недоступна (ти не увійшов у claude.ai?). Зміни зберігаються лише в цьому браузері.';
+    render();return;
+  }
+  const got=new Set();
+  for(const c of COLS){
+    db.collection(c).onSnapshot(snap=>{
+      S[c]=new Map(snap.docs.map(d=>[d.id,d.data()]));got.add(c);
+      if(got.size===COLS.length)ready=true;
+      render();
+    },err=>toast('Зв’язок з базою втрачено: '+(err.message||err.code)+'. Онови сторінку.'));
+  }
+})();
+</script>
