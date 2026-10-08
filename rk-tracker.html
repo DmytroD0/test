@@ -1,15 +1,15 @@
 <title>РК Трекер</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
 /* Layout: top bar + summary strip, then a soc-account rail on the left and grouped RK tables on the right; edits happen in a right drawer. */
 :root{
   --bg:#f2f3f7; --surface:#ffffff; --sunk:#f7f8fb; --ink:#1b2030; --muted:#636a7e; --line:#dde0e9;
   --accent:#2c4fc9; --accent-ink:#ffffff; --accent-soft:#e7ecfb;
   --ok:#1d8f4e; --ok-soft:#e1f4e8; --warn:#b06f08; --warn-soft:#fbf0dc; --stop:#8b92a5; --stop-soft:#eceef3; --danger:#c43c3c;
-  --f-display:"Unbounded","IBM Plex Sans",system-ui,sans-serif;
+  --f-display:var(--f-body);
   --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --f-mono:var(--f-body);
   --r:8px;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
@@ -23,19 +23,19 @@
   --ok:#43c97f; --ok-soft:#163223; --warn:#e7a43c; --warn-soft:#3a2c14; --stop:#8890a3; --stop-soft:#252a35; --danger:#ef6b6b;
   color-scheme:dark}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font:14px/1.45 var(--f-body)}
+body{background:var(--bg);color:var(--ink);font:14px/1.45 var(--f-body);font-variant-numeric:tabular-nums}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .app{max-width:1440px;margin:0 auto;padding:16px 16px 48px;display:flex;flex-direction:column;gap:14px}
 
 .top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
-.brand{font:600 17px/1 var(--f-display);letter-spacing:.01em;margin-right:4px}
+.brand{font:600 18px/1 var(--f-display);letter-spacing:.01em;margin-right:4px}
 .brand span{color:var(--accent)}
 .tabs{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:3px;gap:2px}
 .tabs button{border:0;background:none;padding:6px 12px;border-radius:6px;color:var(--muted);font-weight:500;display:flex;gap:6px;align-items:center}
 .tabs button[aria-pressed="true"]{background:var(--accent-soft);color:var(--ink)}
-.tabs b{font:500 11px/1 var(--f-mono);background:var(--accent);color:var(--accent-ink);border-radius:10px;padding:3px 6px}
+.tabs b{font-weight:600;font-size:11px;line-height:1;background:var(--accent);color:var(--accent-ink);border-radius:10px;padding:3px 6px}
 .search{flex:1 1 220px;min-width:0;padding:8px 12px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
 .btn{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:6px 11px;font-weight:500;white-space:nowrap}
 .btn:hover{border-color:var(--accent)}
@@ -48,7 +48,7 @@ button{cursor:pointer}
 .mode{font-size:13px;color:var(--warn);background:var(--warn-soft);border-radius:var(--r);padding:8px 12px}
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 .stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px 14px}
-.stat .n{font:500 22px/1.1 var(--f-mono);font-variant-numeric:tabular-nums}
+.stat .n{font-weight:600;font-size:22px;line-height:1.1;font-variant-numeric:tabular-nums}
 .stat .n small{font-size:13px;color:var(--muted)}
 .stat .l{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
 
@@ -59,7 +59,7 @@ button{cursor:pointer}
 .socnav button{display:flex;justify-content:space-between;gap:8px;align-items:center;text-align:left;border:0;background:none;padding:7px 10px;border-radius:6px}
 .socnav button:hover{background:var(--surface)}
 .socnav button[aria-pressed="true"]{background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);font-weight:600}
-.socnav .cnt{font:12px var(--f-mono);color:var(--muted)}
+.socnav .cnt{font-size:12px;color:var(--muted)}
 .socnav .cnt.t{color:var(--warn)}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chips button{border:1px solid var(--line);background:var(--surface);border-radius:20px;padding:4px 10px;font-size:13px}
@@ -74,25 +74,26 @@ button{cursor:pointer}
 .bm + .bm{border-top:1px solid var(--line)}
 .bm-h{display:flex;align-items:center;gap:8px;padding:10px 16px 6px}
 .bm-h h3{margin:0;font-size:14px;font-weight:600;margin-right:auto;display:flex;gap:8px;align-items:baseline}
-.tag{font:500 10px/1 var(--f-mono);letter-spacing:.06em;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:3px 5px}
+.tag{font-weight:600;font-size:10px;line-height:1;letter-spacing:.06em;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:3px 5px}
 .tbl{overflow-x:auto;padding:0 8px 10px}
-table{width:100%;border-collapse:collapse;min-width:820px}
-th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;text-align:left;padding:6px 8px;white-space:nowrap}
-td{padding:8px;border-top:1px solid var(--line);vertical-align:top}
+table{width:100%;border-collapse:collapse;min-width:980px;border:1px solid var(--line)}
+th{background:var(--sunk);border:1px solid var(--line);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;text-align:left;padding:6px 8px;white-space:nowrap}
+td{padding:7px 8px;border:1px solid var(--line);vertical-align:top;font-size:13px}
+tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--sunk) 55%,transparent)}
 tbody tr{cursor:pointer}
 tbody tr:hover td{background:var(--sunk)}
 tr.st-stop td{color:var(--muted)}
-.code{font:500 13px var(--f-mono);white-space:nowrap;display:flex;gap:7px;align-items:center}
+.code{font-weight:600;font-size:13px;white-space:nowrap;display:flex;gap:7px;align-items:center}
 .dot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--stop)}
 .st-active .dot{background:var(--ok)} .st-prep .dot{background:var(--warn)}
-.mono{font-family:var(--f-mono);font-size:12.5px;font-variant-numeric:tabular-nums;color:var(--muted)}
+.mono{font-size:13px;font-variant-numeric:tabular-nums;color:var(--muted)}
 .offer{font-weight:500;word-break:break-word}
 .link{color:var(--accent);text-decoration:none;font-size:13px;word-break:break-all}
 .link:hover{text-decoration:underline}
-.appr{display:inline-block;background:var(--accent-soft);border-radius:4px;padding:1px 6px;font-size:12.5px;white-space:nowrap}
-.tasks-cell{font-size:13px;max-width:280px}
+.appr{display:inline-block;background:var(--accent-soft);border-radius:4px;padding:1px 6px;font-size:13px;white-space:nowrap}
+.tasks-cell{max-width:280px}
 .tasks-cell .more{color:var(--muted);font-size:12px}
-.tn{display:inline-block;font:500 11px/1 var(--f-mono);color:var(--warn);background:var(--warn-soft);border-radius:4px;padding:3px 5px;margin-right:6px}
+.tn{display:inline-block;font-weight:600;font-size:12px;line-height:1;color:var(--warn);background:var(--warn-soft);border-radius:4px;padding:3px 5px;margin-right:6px}
 .empty-row td{color:var(--muted);cursor:default;font-size:13px}
 .empty{background:var(--surface);border:1px dashed var(--line);border-radius:10px;padding:32px 20px;text-align:center;color:var(--muted);display:flex;flex-direction:column;gap:12px;align-items:center}
 .empty strong{color:var(--ink);font-size:16px}
@@ -105,12 +106,12 @@ tr.st-stop td{color:var(--muted)}
 .tv-bm h3{margin:0 0 4px;font-size:13px;color:var(--muted);font-weight:600}
 .tv-line{display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:4px 10px;align-items:start;padding:5px 0;border-top:1px solid var(--line)}
 .tv-line:first-of-type{border-top:0}
-.tv-rk{font:500 13px var(--f-mono);background:none;border:0;padding:0;color:var(--accent);text-align:left}
+.tv-rk{font-weight:600;font-size:13px;background:none;border:0;padding:0;color:var(--accent);text-align:left}
 .tv-tasks{display:flex;flex-direction:column;gap:3px;min-width:0}
 .task{display:flex;gap:8px;align-items:flex-start}
 .task input{margin-top:3px;accent-color:var(--ok)}
 .task.done span{text-decoration:line-through;color:var(--muted)}
-.copybox{width:100%;min-height:160px;font:13px var(--f-mono);padding:10px;border:1px solid var(--line);border-radius:var(--r);background:var(--sunk)}
+.copybox{width:100%;min-height:160px;font-size:13px;padding:10px;border:1px solid var(--line);border-radius:var(--r);background:var(--sunk)}
 
 /* drawer */
 .scrim{position:fixed;inset:0;background:rgba(10,12,20,.35);z-index:10}
@@ -209,7 +210,7 @@ function loadLocal(){try{const d=JSON.parse(localStorage.getItem(LS)||'null');if
 function rkMatches(r){
   if(ui.status!=='all'&&(r.status||'prep')!==ui.status)return false;
   if(!ui.q)return true;
-  const hay=[r.code,r.accId,r.offer,r.approach,r.link,r.creo,r.structure,r.notes,r.page,...(r.tasks||[]).map(t=>t.text)].join(' ').toLowerCase();
+  const hay=[r.code,r.accId,r.offer,r.approach,r.link,r.cLink,r.creo,r.structure,r.notes,r.page,...(r.tasks||[]).map(t=>t.text)].join(' ').toLowerCase();
   return hay.includes(ui.q);
 }
 function nameMatch(...n){return ui.q&&n.join(' ').toLowerCase().includes(ui.q)}
@@ -260,8 +261,8 @@ function renderAcc(){
       shown++;
       bmH+=`<div class="bm"><div class="bm-h"><h3><span class="tag">БМ</span>${esc(b.name||'Без назви')}</h3>
         <button class="btn ghost" data-edit="bms:${bid}">Змінити</button><button class="btn" data-addrk="${bid}">+ РК</button></div>
-        <div class="tbl"><table><thead><tr><th>РК</th><th>ID</th><th>Офер / ленд</th><th>Підхід</th><th>Силка</th><th>Крео</th><th>Сторінка</th><th>Задачі</th></tr></thead><tbody>
-        ${rks.length?rks.map(([rid,r])=>rowHtml(rid,r)).join(''):`<tr class="empty-row"><td colspan="8">Немає РК. Натисни «+ РК».</td></tr>`}
+        <div class="tbl"><table><thead><tr><th>РК</th><th>Карта</th><th>Офер / ленд</th><th>Підхід</th><th>Силка</th><th>Крео</th><th>Сторінка</th><th>Коменти</th><th>Задачі</th></tr></thead><tbody>
+        ${rks.length?rks.map(([rid,r])=>rowHtml(rid,r)).join(''):`<tr class="empty-row"><td colspan="9">Немає РК. Натисни «+ РК».</td></tr>`}
         </tbody></table></div></div>`;
     }
     if(filtering&&!shown&&!socHit)continue;
@@ -284,12 +285,13 @@ function rowHtml(rid,r){
   const st=r.status||'prep', ot=openTasks(r);
   return `<tr class="st-${st}" data-rk="${rid}" tabindex="0">
     <td><span class="code"><span class="dot" title="${STATUS[st]}"></span>${esc(r.code||'—')}</span></td>
-    <td class="mono">${esc(r.accId)}</td>
+    <td class="mono">${r.accId?'•• '+esc(r.accId):''}</td>
     <td class="offer">${esc(r.offer)}${r.notes?` <span class="mono" title="${esc(r.notes)}">· нотатка</span>`:''}</td>
     <td>${r.approach?`<span class="appr">${esc(r.approach)}</span>`:''}</td>
     <td>${linkHtml(r.link)}</td>
     <td>${esc(r.creo)}</td>
     <td>${esc(r.page)}</td>
+    <td>${linkHtml(r.cLink)}</td>
     <td class="tasks-cell">${ot.length?`<span class="tn">${ot.length}</span>${esc(ot[0].text)}${ot.length>1?` <span class="more">+${ot.length-1}</span>`:''}`:''}</td></tr>`;
 }
 
@@ -346,11 +348,12 @@ function openDrawer(col,id,focusName){
   }else{kind='РК';const b=S.bms.get(o.bm),s=b&&S.socs.get(b.soc);title=o.code||'РК';crumb=[s&&s.name,b&&b.name].filter(Boolean).join(' › ');
     const bmOpts=[];for(const [si,sx] of socsSorted())for(const [bi,bx] of bmsOf(si))bmOpts.push([bi,sx.name+' › '+bx.name]);
     h=`<div class="form">
-      ${field('code','РК',o.code,{ph:'RK1'})}${field('accId','ID',o.accId,{ph:'2053'})}
+      ${field('code','РК',o.code,{ph:'RK1'})}${field('accId','Карта (ост. 4 цифри)',o.accId,{ph:'2053'})}
       ${field('status','Статус',o.status||'prep',{select:Object.entries(STATUS)})}${field('approach','Підхід',o.approach,{ph:'ТН зір, МХ суглоби…'})}
       ${field('offer','Офер / ленд',o.offer,{w:1,ph:'th_vitaberry_man_vet_bf'})}
       ${field('link','Силка',o.link,{w:1,ph:'https://…'})}
       ${field('page','Сторінка',o.page,{ph:'Moore Care'})}${field('creo','Крео',o.creo,{ph:'діти, піксар…'})}
+      ${field('cLink','Силка для коментів',o.cLink,{w:1,ph:'https://…'})}
       ${field('structure','Структура запуску',o.structure,{area:1,ph:'СВО 1-3-1, бюджет, кількість адсетів…'})}
       ${field('notes','Нотатки',o.notes,{area:1})}
       ${field('bm','БМ',o.bm,{w:1,select:bmOpts})}
@@ -377,7 +380,7 @@ function closeDrawer(){ui.open=null;$('#drawer').hidden=true;$('#scrim').hidden=
 function addSoc(){const id=uid();put('socs',id,{name:'Новий соц аккаунт',note:'',order:Date.now()});openDrawer('socs',id,true)}
 function addBm(sid){const id=uid();put('bms',id,{soc:sid,name:'Новий БМ',note:'',order:Date.now()});openDrawer('bms',id,true)}
 function addRk(bid){const n=rksOf(bid).reduce((m,[,r])=>Math.max(m,rkNum(r)===999?0:rkNum(r)),0)+1;const id=uid();
-  put('rks',id,{bm:bid,code:'RK'+n,accId:'',status:'prep',offer:'',approach:'',link:'',creo:'',structure:'',notes:'',page:'',tasks:[],order:Date.now()});openDrawer('rks',id,true)}
+  put('rks',id,{bm:bid,code:'RK'+n,accId:'',status:'prep',offer:'',approach:'',link:'',cLink:'',creo:'',structure:'',notes:'',page:'',tasks:[],order:Date.now()});openDrawer('rks',id,true)}
 function toggleTask(rid,tid){const r=S.rks.get(rid);if(!r)return;patch('rks',rid,{tasks:(r.tasks||[]).map(t=>t.id===tid?{...t,done:!t.done}:{...t})})}
 let armed=null;
 function deleteOpen(btn){
