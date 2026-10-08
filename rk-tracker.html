@@ -278,7 +278,7 @@ function renderAcc(){
       shown++;
       bmH+=`<div class="bm"><div class="bm-h"><h3><span class="tag">БМ</span>${esc(b.name||'Без назви')}</h3>
         <button class="btn ghost" data-edit="bms:${bid}">Змінити</button><button class="btn" data-addrk="${bid}">+ РК</button></div>
-        <div class="tbl"><table><thead><tr><th>РК</th><th>Статус</th><th>Карта</th><th>Офер / ленд</th><th>Підхід</th><th>Силка</th><th>Сторінка</th><th>Коменти</th></tr></thead><tbody>
+        <div class="tbl"><table><thead><tr><th>РК</th><th>Статус</th><th>Карта</th><th>Офер / ленд</th><th>Підхід</th><th>Силка</th><th>Сторінка</th><th>Задачі</th></tr></thead><tbody>
         ${rks.length?rks.map(([rid,r])=>rowHtml(rid,r)).join(''):`<tr class="empty-row"><td colspan="8">Немає РК. Натисни «+ РК».</td></tr>`}
         </tbody></table></div></div>`;
     }
@@ -308,8 +308,7 @@ function rowHtml(rid,r){
     <td>${r.approach?`<span class="appr">${esc(r.approach)}</span>`:''}</td>
     <td>${linkHtml(r.link)}</td>
     <td>${esc(r.page)}</td>
-    <td>${linkHtml(r.cLink)}</td>
-  </tr>`;
+    <td class="tasks-cell">${ot.length?`<span class="tn">${ot.length}</span>${esc(ot[0].text)}${ot.length>1?` <span class="more">+${ot.length-1}</span>`:''}`:''}</td></tr>`;
 }
 
 function renderTasks(){
