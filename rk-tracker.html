@@ -6,7 +6,7 @@
 :root{
   --bg:#f2f3f7; --surface:#ffffff; --sunk:#f7f8fb; --ink:#1b2030; --muted:#636a7e; --line:#dde0e9;
   --accent:#2c4fc9; --accent-ink:#ffffff; --accent-soft:#e7ecfb;
-  --ok:#1d8f4e; --ok-soft:#e1f4e8; --warn:#b06f08; --warn-soft:#fbf0dc; --stop:#8b92a5; --stop-soft:#eceef3; --danger:#c43c3c;
+  --ok:#1d8f4e; --ok-soft:#e1f4e8; --warn:#b06f08; --warn-soft:#fbf0dc; --stop:#8b92a5; --stop-soft:#eceef3; --danger:#c43c3c; --ok-row:#eaf7ef; --warn-row:#fdf4e4;
   --f-display:var(--f-body);
   --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:var(--f-body);
@@ -15,12 +15,12 @@
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#11141b; --surface:#191d26; --sunk:#151820; --ink:#e5e8f0; --muted:#949bb0; --line:#2a303d;
   --accent:#7d9bff; --accent-ink:#0f1320; --accent-soft:#1f2842;
-  --ok:#43c97f; --ok-soft:#163223; --warn:#e7a43c; --warn-soft:#3a2c14; --stop:#8890a3; --stop-soft:#252a35; --danger:#ef6b6b;
+  --ok:#43c97f; --ok-soft:#163223; --warn:#e7a43c; --warn-soft:#3a2c14; --stop:#8890a3; --stop-soft:#252a35; --danger:#ef6b6b; --ok-row:#13281c; --warn-row:#2b2313;
   color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#11141b; --surface:#191d26; --sunk:#151820; --ink:#e5e8f0; --muted:#949bb0; --line:#2a303d;
   --accent:#7d9bff; --accent-ink:#0f1320; --accent-soft:#1f2842;
-  --ok:#43c97f; --ok-soft:#163223; --warn:#e7a43c; --warn-soft:#3a2c14; --stop:#8890a3; --stop-soft:#252a35; --danger:#ef6b6b;
+  --ok:#43c97f; --ok-soft:#163223; --warn:#e7a43c; --warn-soft:#3a2c14; --stop:#8890a3; --stop-soft:#252a35; --danger:#ef6b6b; --ok-row:#13281c; --warn-row:#2b2313;
   color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font:14px/1.45 var(--f-body);font-variant-numeric:tabular-nums}
@@ -83,6 +83,21 @@ tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--sunk) 55%,transpa
 tbody tr{cursor:pointer}
 tbody tr:hover td{background:var(--sunk)}
 tr.st-stop td{color:var(--muted)}
+tbody tr.st-active td{background:var(--ok-row)}
+tbody tr.st-prep td{background:var(--warn-row)}
+tbody tr.st-active td:first-child{box-shadow:inset 4px 0 0 var(--ok)}
+tbody tr.st-prep td:first-child{box-shadow:inset 4px 0 0 var(--warn)}
+tbody tr.st-stop td:first-child{box-shadow:inset 4px 0 0 var(--stop)}
+tbody tr.st-active:hover td{background:var(--ok-soft)}
+tbody tr.st-prep:hover td{background:var(--warn-soft)}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:3px 10px 3px 8px;font-weight:600;font-size:12px;white-space:nowrap;border:1px solid var(--stop);background:var(--stop-soft);color:var(--stop)}
+.pill .dot{width:8px;height:8px}
+.pill.st-active{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
+.pill.st-prep{border-color:var(--warn);background:var(--warn-soft);color:var(--warn)}
+.pill:hover{filter:brightness(1.08)}
+.st-active .pill .dot,.pill.st-active .dot{background:var(--ok);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 25%,transparent)}
+.chips .dot{display:inline-block;width:8px;height:8px;margin-right:6px}
+.chips .c-active .dot{background:var(--ok)} .chips .c-prep .dot{background:var(--warn)}
 .code{font-weight:600;font-size:13px;white-space:nowrap;display:flex;gap:7px;align-items:center}
 .dot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--stop)}
 .st-active .dot{background:var(--ok)} .st-prep .dot{background:var(--warn)}
@@ -158,6 +173,7 @@ tr.st-stop td{color:var(--muted)}
       <button id="tab-tasks" data-view="tasks" aria-pressed="false">Задачі <b id="taskCount">0</b></button>
     </nav>
     <input id="q" class="search" type="search" placeholder="Пошук: офер, силка, сторінка, задача…" aria-label="Пошук">
+    <button id="themeBtn" class="btn" aria-label="Змінити тему">☀︎ Світла</button>
     <button id="addSoc" class="btn primary">+ Соц аккаунт</button>
   </header>
   <div id="mode" class="mode" hidden></div>
@@ -239,7 +255,7 @@ function renderSide(){
     h+=btn(id,s.name||'Без назви',t?t+' зад.':bms.length+' БМ',t);
   }
   h+=`</div></div><div><h4>Статус РК</h4><div class="chips">`+
-    [['all','Всі'],['active','Працює'],['prep','Готується'],['stop','Стоп']].map(([k,l])=>`<button data-status="${k}" aria-pressed="${ui.status===k}">${l}</button>`).join('')+`</div></div>`;
+    [['all','Всі'],['active','Працює'],['prep','Готується'],['stop','Стоп']].map(([k,l])=>`<button class="c-${k}" data-status="${k}" aria-pressed="${ui.status===k}">${k!=='all'?'<span class="dot"></span>':''}${l}</button>`).join('')+`</div></div>`;
   $('#side').innerHTML=h;
 }
 
@@ -261,8 +277,8 @@ function renderAcc(){
       shown++;
       bmH+=`<div class="bm"><div class="bm-h"><h3><span class="tag">БМ</span>${esc(b.name||'Без назви')}</h3>
         <button class="btn ghost" data-edit="bms:${bid}">Змінити</button><button class="btn" data-addrk="${bid}">+ РК</button></div>
-        <div class="tbl"><table><thead><tr><th>РК</th><th>Карта</th><th>Офер / ленд</th><th>Підхід</th><th>Силка</th><th>Крео</th><th>Сторінка</th><th>Коменти</th><th>Задачі</th></tr></thead><tbody>
-        ${rks.length?rks.map(([rid,r])=>rowHtml(rid,r)).join(''):`<tr class="empty-row"><td colspan="9">Немає РК. Натисни «+ РК».</td></tr>`}
+        <div class="tbl"><table><thead><tr><th>РК</th><th>Статус</th><th>Карта</th><th>Офер / ленд</th><th>Підхід</th><th>Силка</th><th>Крео</th><th>Сторінка</th><th>Коменти</th><th>Задачі</th></tr></thead><tbody>
+        ${rks.length?rks.map(([rid,r])=>rowHtml(rid,r)).join(''):`<tr class="empty-row"><td colspan="10">Немає РК. Натисни «+ РК».</td></tr>`}
         </tbody></table></div></div>`;
     }
     if(filtering&&!shown&&!socHit)continue;
@@ -284,7 +300,8 @@ function linkHtml(u){
 function rowHtml(rid,r){
   const st=r.status||'prep', ot=openTasks(r);
   return `<tr class="st-${st}" data-rk="${rid}" tabindex="0">
-    <td><span class="code"><span class="dot" title="${STATUS[st]}"></span>${esc(r.code||'—')}</span></td>
+    <td><span class="code">${esc(r.code||'—')}</span></td>
+    <td><button class="pill st-${st}" data-cycle="${rid}" title="Натисни, щоб змінити статус"><span class="dot"></span>${STATUS[st]}</button></td>
     <td class="mono">${r.accId?'•• '+esc(r.accId):''}</td>
     <td class="offer">${esc(r.offer)}${r.notes?` <span class="mono" title="${esc(r.notes)}">· нотатка</span>`:''}</td>
     <td>${r.approach?`<span class="appr">${esc(r.approach)}</span>`:''}</td>
@@ -405,6 +422,8 @@ document.addEventListener('click',e=>{
   if(ds.addrk){addRk(ds.addrk);return}
   if(ds.rk){openDrawer('rks',ds.rk);return}
   if(ds.open){openDrawer('rks',ds.open);return}
+  if(ds.cycle){const r=S.rks.get(ds.cycle);const order=['active','prep','stop'];const n=order[(order.indexOf(r.status||'prep')+1)%3];patch('rks',ds.cycle,{status:n});toast('Статус: '+STATUS[n]);return}
+  if(t.id==='themeBtn'){setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');return}
   if(ds.toggle){const [r,i]=ds.toggle.split(':');toggleTask(r,i);return}
   if(ds.deltask){const r=S.rks.get(ui.open.id);patch('rks',ui.open.id,{tasks:(r.tasks||[]).filter(x=>x.id!==ds.deltask).map(x=>({...x}))});return}
   if(t.id==='addSoc'||ds.act==='addSoc'){addSoc();return}
@@ -435,6 +454,8 @@ document.addEventListener('change',e=>{if(e.target.id==='showDone'){ui.showDone=
 let qt;$('#q').addEventListener('input',e=>{clearTimeout(qt);qt=setTimeout(()=>{ui.q=e.target.value.trim().toLowerCase();render()},120)});
 
 /* ---------- boot ---------- */
+function setTheme(t){document.documentElement.dataset.theme=t;const b=$('#themeBtn');if(b)b.textContent=t==='dark'?'☀︎ Світла':'☾ Темна';try{localStorage.setItem('rk-theme',t)}catch(e){}}
+{let t='dark';try{t=localStorage.getItem('rk-theme')||'dark'}catch(e){}setTheme(t)}
 render();
 (async()=>{
   try{db=window.claude&&window.claude.use?await window.claude.use('db'):null}catch(e){db=null}
