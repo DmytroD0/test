@@ -6,7 +6,7 @@
 :root{
   --bg:#f2f3f7; --surface:#ffffff; --sunk:#f7f8fb; --ink:#1b2030; --muted:#636a7e; --line:#dde0e9;
   --accent:#2c4fc9; --accent-ink:#ffffff; --accent-soft:#e7ecfb;
-  --ok:#1d8f4e; --ok-soft:#e1f4e8; --warn:#b06f08; --warn-soft:#fbf0dc; --stop:#8b92a5; --stop-soft:#eceef3; --danger:#c43c3c; --ok-row:#eaf7ef; --warn-row:#fdf4e4; --soc-bg:#2343b5; --soc-ink:#ffffff; --bm-bg:#d3efeb; --bm-line:#12857a; --bm-ink:#0c4d47;
+  --ok:#1d8f4e; --ok-soft:#e1f4e8; --warn:#b06f08; --warn-soft:#fbf0dc; --stop:#8b92a5; --stop-soft:#eceef3; --danger:#c43c3c; --ok-row:#eaf7ef; --warn-row:#fdf4e4; --soc-bg:#2343b5; --soc-ink:#ffffff; --bm-bg:#ece3fc; --bm-line:#7447d4; --bm-ink:#3f1f86;
   --f-display:var(--f-body);
   --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:var(--f-body);
@@ -15,12 +15,12 @@
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#11141b; --surface:#191d26; --sunk:#151820; --ink:#e5e8f0; --muted:#949bb0; --line:#2a303d;
   --accent:#7d9bff; --accent-ink:#0f1320; --accent-soft:#1f2842;
-  --ok:#43c97f; --ok-soft:#163223; --warn:#e7a43c; --warn-soft:#3a2c14; --stop:#8890a3; --stop-soft:#252a35; --danger:#ef6b6b; --ok-row:#13281c; --warn-row:#2b2313; --soc-bg:#2c4cc0; --soc-ink:#ffffff; --bm-bg:#163a37; --bm-line:#3cc4b6; --bm-ink:#9ff0e6;
+  --ok:#43c97f; --ok-soft:#163223; --warn:#e7a43c; --warn-soft:#3a2c14; --stop:#8890a3; --stop-soft:#252a35; --danger:#ef6b6b; --ok-row:#13281c; --warn-row:#2b2313; --soc-bg:#2c4cc0; --soc-ink:#ffffff; --bm-bg:#2a2045; --bm-line:#a684f6; --bm-ink:#dccbff;
   color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#11141b; --surface:#191d26; --sunk:#151820; --ink:#e5e8f0; --muted:#949bb0; --line:#2a303d;
   --accent:#7d9bff; --accent-ink:#0f1320; --accent-soft:#1f2842;
-  --ok:#43c97f; --ok-soft:#163223; --warn:#e7a43c; --warn-soft:#3a2c14; --stop:#8890a3; --stop-soft:#252a35; --danger:#ef6b6b; --ok-row:#13281c; --warn-row:#2b2313; --soc-bg:#2c4cc0; --soc-ink:#ffffff; --bm-bg:#163a37; --bm-line:#3cc4b6; --bm-ink:#9ff0e6;
+  --ok:#43c97f; --ok-soft:#163223; --warn:#e7a43c; --warn-soft:#3a2c14; --stop:#8890a3; --stop-soft:#252a35; --danger:#ef6b6b; --ok-row:#13281c; --warn-row:#2b2313; --soc-bg:#2c4cc0; --soc-ink:#ffffff; --bm-bg:#2a2045; --bm-line:#a684f6; --bm-ink:#dccbff;
   color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font:14px/1.45 var(--f-body);font-variant-numeric:tabular-nums}
@@ -118,6 +118,33 @@ tbody tr.st-prep:hover td{background:var(--warn-soft)}
 .empty{background:var(--surface);border:1px dashed var(--line);border-radius:10px;padding:32px 20px;text-align:center;color:var(--muted);display:flex;flex-direction:column;gap:12px;align-items:center}
 .empty strong{color:var(--ink);font-size:16px}
 
+/* ideas view */
+.idea-add{display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px}
+.idea-form{display:flex;flex-direction:column;gap:8px}
+.idea-form textarea{width:100%;min-height:64px;resize:vertical;padding:9px 11px;border:1px solid var(--line);border-radius:6px;background:var(--sunk)}
+.idea-row{display:flex;flex-wrap:wrap;gap:8px}
+.idea-row select,.idea-row input{flex:1 1 170px;min-width:0;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--sunk)}
+.idea-done{display:flex;gap:6px;align-items:center;color:var(--muted);font-size:13px}
+.board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:start}
+.col{background:var(--sunk);border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:8px;border-top:4px solid var(--c)}
+.col-idea{--c:var(--accent)} .col-make{--c:var(--ok)} .col-dept{--c:var(--bm-line)} .col-unique{--c:var(--warn)}
+.col h3{margin:0;font-size:14px;font-weight:700;display:flex;justify-content:space-between}
+.col h3 span{color:var(--muted);font-weight:600}
+.col-empty{color:var(--muted);font-size:13px;padding:6px 2px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:9px 10px;display:flex;flex-direction:column;gap:6px;cursor:pointer}
+.card:hover{border-color:var(--c)}
+.card.ist-done{opacity:.6}
+.card.ist-done .card-t{text-decoration:line-through}
+.card-t{white-space:pre-wrap;word-break:break-word;font-weight:500}
+.card-m{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.card-rk{font-size:12px;color:var(--muted)}
+.card-n{font-size:12.5px;color:var(--muted);white-space:pre-wrap}
+.ipill{align-self:flex-start;border-radius:20px;padding:2px 10px;font-size:12px;font-weight:600;border:1px solid var(--stop);background:var(--stop-soft);color:var(--stop)}
+.ipill.ist-new{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.ipill.ist-work{border-color:var(--warn);background:var(--warn-soft);color:var(--warn)}
+.ipill.ist-done{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
+@media (max-width:1100px){.board{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.board{grid-template-columns:minmax(0,1fr)}}
 /* setup view */
 table.setup{min-width:640px}
 table.setup tbody tr{cursor:default}
@@ -201,6 +228,7 @@ table.setup select:focus,table.setup input:focus{border-color:var(--accent);back
     <nav class="tabs" aria-label="Вигляд">
       <button id="tab-acc" data-view="acc" aria-pressed="true">Аккаунти</button>
       <button id="tab-setup" data-view="setup" aria-pressed="false">Сетапи</button>
+      <button id="tab-ideas" data-view="ideas" aria-pressed="false">Ідеї для креативів <b id="ideaCount">0</b></button>
       <button id="tab-tasks" data-view="tasks" aria-pressed="false">Задачі <b id="taskCount">0</b></button>
     </nav>
     <input id="q" class="search" type="search" placeholder="Пошук: офер, силка, сторінка, задача…" aria-label="Пошук">
@@ -219,9 +247,12 @@ table.setup select:focus,table.setup input:focus{border-color:var(--accent);back
 <div id="toast" class="toast" hidden></div>
 
 <script>
-const COLS=['socs','bms','rks'];
-const S={socs:new Map(),bms:new Map(),rks:new Map()};
-const ui={view:'acc',soc:'all',status:'all',q:'',showDone:false,open:null};
+const COLS=['socs','bms','rks','ideas'];
+const S={socs:new Map(),bms:new Map(),rks:new Map(),ideas:new Map()};
+const ui={view:'acc',soc:'all',status:'all',q:'',showDone:false,showIdeasDone:false,open:null};
+const ITYPE={idea:'Ідеї',make:'Зробити',dept:'В креатив відділ',unique:'Унікалізувати'};
+const ITYPE1={idea:'Ідея',make:'Зробити',dept:'В креатив відділ',unique:'Унікалізувати'};
+const ISTAT={new:'Нова',work:'В роботі',done:'Готово'};
 const STATUS={active:'Працює',prep:'Готується',stop:'Стоп'};
 const LS='rk-tracker-v1';
 let db=null, ready=false, local=false;
@@ -271,13 +302,14 @@ function render(){
   const allRks=[...S.rks.values()];
   const open=allRks.reduce((n,r)=>n+openTasks(r).length,0);
   $('#taskCount').textContent=open;
+  $('#ideaCount').textContent=[...S.ideas.values()].filter(i=>(i.status||'new')!=='done').length;
   $('#stats').innerHTML=[
     [S.socs.size,'Соц аккаунти'],[S.bms.size,'БМ'],
     [`${allRks.filter(r=>r.status==='active').length}<small> / ${allRks.length}</small>`,'РК працюють'],
     [open,'Відкриті задачі']].map(([n,l])=>`<div class="stat"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
   renderSide();
   if(!ready){return}
-  ui.view==='acc'?renderAcc():ui.view==='setup'?renderSetup():renderTasks();
+  ui.view==='acc'?renderAcc():ui.view==='setup'?renderSetup():ui.view==='ideas'?renderIdeas():renderTasks();
   if(ui.open&&!$('#drawer').hidden)refreshDrawerTasks();
 }
 
@@ -391,6 +423,33 @@ function renderSetup(){
   $('#main').innerHTML=h+'</tbody></table></div></section>';
 }
 
+function rkLabel(rid){const r=S.rks.get(rid);if(!r)return '';const b=S.bms.get(r.bm);return (b?b.name+' › ':'')+(r.code||'РК')}
+function rkOptions(cur){const o=[['','— не прив\'язано —']];for(const [si,sx] of allSocs())for(const [bi,bx] of bmsOf(si))for(const [ri,rx] of rksOf(bi))o.push([ri,sx.name+' › '+bx.name+' › '+(rx.code||'РК')+(rx.approach?' · '+rx.approach:'')]);return o}
+function renderIdeas(){
+  if(!$('#ideaForm')){
+    $('#main').innerHTML=`<section class="idea-add"><form id="ideaForm" class="idea-form">
+      <textarea id="ideaText" placeholder="Ідея або задача по креативу: напр. «піксар з котами під ТН зір, 3 варіанти»" aria-label="Текст ідеї"></textarea>
+      <div class="idea-row">
+        <select id="ideaType" aria-label="Тип">${Object.entries(ITYPE1).map(([k,l])=>`<option value="${k}">${l}</option>`).join('')}</select>
+        <input id="ideaAppr" placeholder="Підхід / офер (ТН зір…)" aria-label="Підхід">
+        <select id="ideaRk" aria-label="Для якого РК">${rkOptions('').map(([v,l])=>`<option value="${esc(v)}">${esc(l)}</option>`).join('')}</select>
+        <button class="btn primary">Додати</button>
+      </div></form>
+      <label class="idea-done"><input id="showIdeasDone" type="checkbox" ${ui.showIdeasDone?'checked':''}> Показати готові</label></section>
+      <div id="ideaBoard" class="board"></div>`;
+  }
+  const list=[...S.ideas].filter(([,i])=>(ui.showIdeasDone||(i.status||'new')!=='done')&&(!ui.q||nameMatch(i.text,i.approach,i.note,rkLabel(i.rk))))
+    .sort((a,b)=>({work:0,new:1,done:2}[a[1].status||'new']-{work:0,new:1,done:2}[b[1].status||'new'])||(b[1].created||0)-(a[1].created||0));
+  $('#ideaBoard').innerHTML=Object.entries(ITYPE).map(([k,l])=>{
+    const items=list.filter(([,i])=>(i.type||'idea')===k);
+    return `<div class="col col-${k}"><h3>${l}<span>${items.length}</span></h3>${items.length?items.map(([id,i])=>{const st=i.status||'new';return `<article class="card ist-${st}" data-edit="ideas:${id}" tabindex="0">
+      <div class="card-t">${esc(i.text)}</div>
+      ${i.approach||i.rk?`<div class="card-m">${i.approach?`<span class="appr">${esc(i.approach)}</span>`:''}${i.rk?`<span class="card-rk">${esc(rkLabel(i.rk))}</span>`:''}</div>`:''}
+      ${i.note?`<div class="card-n">${esc(i.note)}</div>`:''}
+      <button class="ipill ist-${st}" data-icycle="${id}" title="Натисни, щоб змінити статус">${ISTAT[st]}</button></article>`}).join(''):`<div class="col-empty">Порожньо</div>`}</div>`;
+  }).join('');
+}
+
 function reportText(){
   const out=[];
   for(const [sid,s] of visibleSocs()){
@@ -419,6 +478,12 @@ function openDrawer(col,id,focusName){
     h=`<div class="form">${field('name','Назва',o.name,{w:1,ph:'Напр. Zoryana Prokopenko'})}${field('note','Нотатка',o.note,{area:1,ph:'Логін, проксі, стан аккаунта…'})}</div>`;
   }else if(col==='bms'){kind='БМ';title=o.name;const s=S.socs.get(o.soc);crumb=s?s.name:'Без основи';
     h=`<div class="form">${field('name','Назва БМ',o.name,{w:1})}${field('soc','Основа (соц аккаунт)',S.socs.has(o.soc)?o.soc:'',{w:1,select:[['','— без основи —'],...socsSorted().map(([i,x])=>[i,x.name])]})}${field('access','Доступ',o.access,{w:1,ph:'Hilary Jones \\ Zina'})}${field('note','Нотатка',o.note,{area:1})}</div>`;
+  }else if(col==='ideas'){kind='ідею';title=ITYPE1[o.type||'idea'];crumb='Ідея для креативу';
+    h=`<div class="form">${field('text','Текст',o.text,{area:1})}
+      ${field('type','Тип',o.type||'idea',{select:Object.entries(ITYPE1)})}${field('status','Статус',o.status||'new',{select:Object.entries(ISTAT)})}
+      ${field('approach','Підхід / офер',o.approach,{w:1})}
+      ${field('rk','Для якого РК',o.rk||'',{w:1,select:rkOptions()})}
+      ${field('note','Коментар',o.note,{area:1,ph:'Кому віддав, дедлайн, референси…'})}</div>`;
   }else{kind='РК';const b=S.bms.get(o.bm),s=b&&S.socs.get(b.soc);title=o.code||'РК';crumb=[s&&s.name,b&&b.name].filter(Boolean).join(' › ');
     const bmOpts=[];for(const [si,sx] of allSocs())for(const [bi,bx] of bmsOf(si))bmOpts.push([bi,sx.name+' › '+bx.name]);
     h=`<div class="form">
@@ -470,7 +535,7 @@ function deleteOpen(btn){
 }
 
 document.addEventListener('click',e=>{
-  const t=e.target.closest('button,a,tr[data-rk],input[type=checkbox]');if(!t)return;
+  const t=e.target.closest('button,a,tr[data-rk],article[data-edit],input[type=checkbox]');if(!t)return;
   if(t.matches('a[data-stop]'))return;
   const ds=t.dataset;
   if(ds.view){ui.view=ds.view;document.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.view===ui.view));render();return}
@@ -481,6 +546,7 @@ document.addEventListener('click',e=>{
   if(ds.addrk){addRk(ds.addrk);return}
   if(ds.rk){openDrawer('rks',ds.rk);return}
   if(ds.open){openDrawer('rks',ds.open);return}
+  if(ds.icycle){const i=S.ideas.get(ds.icycle);const o=['new','work','done'];const n=o[(o.indexOf(i.status||'new')+1)%3];patch('ideas',ds.icycle,{status:n});toast('Статус: '+ISTAT[n]);return}
   if(ds.cycle){const r=S.rks.get(ds.cycle);const order=['active','prep','stop'];const n=order[(order.indexOf(r.status||'prep')+1)%3];patch('rks',ds.cycle,{status:n});toast('Статус: '+STATUS[n]);return}
   if(t.id==='themeBtn'){setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');return}
   if(ds.toggle){const [r,i]=ds.toggle.split(':');toggleTask(r,i);return}
@@ -497,6 +563,7 @@ document.addEventListener('click',e=>{
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'&&ui.open)closeDrawer();
   if(e.key==='Enter'&&e.target.matches('tr[data-rk]'))openDrawer('rks',e.target.dataset.rk);
+  if(e.key==='Enter'&&e.target.matches('article[data-edit]')){const [c,i]=e.target.dataset.edit.split(':');openDrawer(c,i)}
 });
 $('#scrim').addEventListener('click',closeDrawer);
 $('#drawer').addEventListener('change',e=>{
@@ -506,6 +573,12 @@ $('#drawer').addEventListener('change',e=>{
   if(k==='name'||k==='code')$('#dTitle').textContent=v||'Без назви';
   const s=$('#saved');s.hidden=false;clearTimeout(s.t);s.t=setTimeout(()=>s.hidden=true,1400);
 });
+document.addEventListener('submit',e=>{
+  if(e.target.id!=='ideaForm')return;e.preventDefault();
+  const t=$('#ideaText').value.trim();if(!t){$('#ideaText').focus();return}
+  put('ideas',uid(),{text:t,type:$('#ideaType').value,status:'new',approach:$('#ideaAppr').value.trim(),rk:$('#ideaRk').value,note:'',created:Date.now()});
+  $('#ideaText').value='';$('#ideaText').focus();toast('Додано');
+});
 $('#drawer').addEventListener('submit',e=>{
   e.preventDefault();const inp=$('#newTask');const v=inp.value.trim();if(!v||!ui.open)return;
   const kind=e.submitter&&e.submitter.value==='note'?'note':'task';
@@ -513,6 +586,7 @@ $('#drawer').addEventListener('submit',e=>{
 });
 document.addEventListener('change',e=>{
   if(e.target.id==='showDone'){ui.showDone=e.target.checked;render();return}
+  if(e.target.id==='showIdeasDone'){ui.showIdeasDone=e.target.checked;render();return}
   const sf=e.target.dataset.sf;if(sf){const [k,id]=sf.split(':');patch('bms',id,{[k]:e.target.tagName==='SELECT'?e.target.value:e.target.value.trim()});toast('Збережено')}
 });
 let qt;$('#q').addEventListener('input',e=>{clearTimeout(qt);qt=setTimeout(()=>{ui.q=e.target.value.trim().toLowerCase();render()},120)});
