@@ -387,7 +387,7 @@ function renderTasks(){
     for(const [bid,b] of bmsOf(sid)){
       let bh='';
       for(const [rid,r] of rksOf(bid)){
-        const ts=(r.tasks||[]).filter(t=>(isNote(t)||ui.showDone||!t.done)&&(!ui.q||nameMatch(t.text,r.code,r.approach,r.offer,b.name,s.name)));
+        const ts=(r.tasks||[]).filter(t=>!isNote(t)&&(ui.showDone||!t.done)&&(!ui.q||nameMatch(t.text,r.code,r.approach,r.offer,b.name,s.name)));
         if(!ts.length)continue;
         bh+=`<div class="tv-line"><button class="tv-rk" data-open="${rid}">${esc(r.code||'РК')}</button>${r.approach?`<span class="appr">${esc(r.approach)}</span>`:'<span></span>'}
           <div class="tv-tasks">${ts.map(t=>isNote(t)?`<div class="task note"><span>${esc(t.text)}</span></div>`:`<label class="task${t.done?' done':''}"><input type="checkbox" data-toggle="${rid}:${t.id}" ${t.done?'checked':''}><span class="nb" title="Задача">!</span><span>${esc(t.text)}</span></label>`).join('')}</div></div>`;
@@ -457,7 +457,7 @@ function reportText(){
     const lines=[];
     for(const [bid,b] of bmsOf(sid)){
       const bl=[];
-      for(const [,r] of rksOf(bid)){const ot=openTasks(r),nt=notesOf(r);if(ot.length||nt.length)bl.push(`${r.code}${r.approach?' - '+r.approach:''} - ${[...ot.map(t=>t.text),...nt.map(t=>'увага: '+t.text)].join('; ')}`)}
+      for(const [,r] of rksOf(bid)){const ot=openTasks(r);if(ot.length)bl.push(`${r.code}${r.approach?' - '+r.approach:''} - ${ot.map(t=>t.text).join('; ')}`)}
       if(bl.length)lines.push(`БМ - ${b.name}`,...bl);
     }
     if(lines.length)out.push([s.name,...lines].join('\n'));
