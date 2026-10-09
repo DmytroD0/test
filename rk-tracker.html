@@ -163,15 +163,17 @@ table.setup select:focus,table.setup input:focus{border-color:var(--accent);back
 .d-sec h4{margin:0;font-size:13px;font-weight:600}
 .d-task{display:flex;gap:8px;align-items:flex-start;padding:4px 0}
 .d-task input[type=checkbox]{margin-top:4px;accent-color:var(--ok)}
-.d-task span{flex:1;min-width:0;word-break:break-word}
+.d-task span:not(.nb){flex:1;min-width:0;word-break:break-word}
 .d-task.done span{text-decoration:line-through;color:var(--muted)}
 .add-task{display:flex;gap:8px;flex-wrap:wrap}
 .add-task input{flex:1 1 200px}
 .note-btn{border-color:var(--accent);color:var(--accent)}
 .hint{font-size:12px;color:var(--muted)}
-.nb{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:12px;line-height:1;flex:none;margin-top:1px}
-.task.note,.d-task.note{background:var(--accent-soft);border-radius:6px;padding:4px 8px}
-.note-line{display:flex;gap:6px;align-items:flex-start;margin-top:3px;color:var(--accent)}
+.nb{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--warn);color:var(--surface);font-weight:700;font-size:12px;line-height:1;flex:none;margin-top:1px}
+.task.note,.d-task.note{padding-left:2px}
+.task-line{display:flex;gap:6px;align-items:flex-start}
+.note-line{margin-top:3px}
+.done .nb{display:none}
 .d-task .btn.ghost{font-size:12px;padding:2px 6px}
 .add-task input{flex:1;min-width:0;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--sunk)}
 .d-foot{display:flex;justify-content:space-between;gap:8px;margin-top:auto;padding-top:14px;border-top:1px solid var(--line)}
@@ -336,7 +338,7 @@ function rowHtml(rid,r){
     <td>${r.approach?`<span class="appr">${esc(r.approach)}</span>`:''}</td>
     <td>${linkHtml(r.link)}</td>
     <td>${esc(r.page)}</td>
-    <td class="tasks-cell">${ot.length?`<div><span class="tn">${ot.length}</span>${esc(ot[0].text)}${ot.length>1?` <span class="more">+${ot.length-1}</span>`:''}</div>`:''}${nt.length?`<div class="note-line"><span class="nb" title="Нотатка">!</span><span>${esc(nt[0].text)}${nt.length>1?` <span class="more">+${nt.length-1}</span>`:''}</span></div>`:''}</td></tr>`;
+    <td class="tasks-cell">${ot.length?`<div class="task-line"><span class="nb" title="Задача">!</span><span>${esc(ot[0].text)}${ot.length>1?` <span class="more">+${ot.length-1}</span>`:''}</span></div>`:''}${nt.length?`<div class="note-line">${esc(nt[0].text)}${nt.length>1?` <span class="more">+${nt.length-1}</span>`:''}</div>`:''}</td></tr>`;
 }
 
 function renderTasks(){
@@ -351,7 +353,7 @@ function renderTasks(){
         const ts=(r.tasks||[]).filter(t=>(isNote(t)||ui.showDone||!t.done)&&(!ui.q||nameMatch(t.text,r.code,r.approach,r.offer,b.name,s.name)));
         if(!ts.length)continue;
         bh+=`<div class="tv-line"><button class="tv-rk" data-open="${rid}">${esc(r.code||'РК')}</button>${r.approach?`<span class="appr">${esc(r.approach)}</span>`:'<span></span>'}
-          <div class="tv-tasks">${ts.map(t=>isNote(t)?`<div class="task note"><span class="nb" title="Нотатка">!</span><span>${esc(t.text)}</span></div>`:`<label class="task${t.done?' done':''}"><input type="checkbox" data-toggle="${rid}:${t.id}" ${t.done?'checked':''}><span>${esc(t.text)}</span></label>`).join('')}</div></div>`;
+          <div class="tv-tasks">${ts.map(t=>isNote(t)?`<div class="task note"><span>${esc(t.text)}</span></div>`:`<label class="task${t.done?' done':''}"><input type="checkbox" data-toggle="${rid}:${t.id}" ${t.done?'checked':''}><span class="nb" title="Задача">!</span><span>${esc(t.text)}</span></label>`).join('')}</div></div>`;
       }
       if(bh)sh+=`<div class="tv-bm"><h3>БМ · ${esc(b.name)}</h3>${bh}</div>`;
     }
@@ -442,7 +444,7 @@ function refreshDrawerTasks(){
   const r=S.rks.get(ui.open.id);if(!r)return closeDrawer();
   const ts=r.tasks||[];
   const sorted=[...ts.filter(isNote),...ts.filter(t=>!isNote(t))];
-  box.innerHTML=ts.length?sorted.map(t=>`<div class="d-task${t.done?' done':''}${isNote(t)?' note':''}">${isNote(t)?'<span class="nb" title="Нотатка">!</span>':`<input type="checkbox" data-toggle="${ui.open.id}:${t.id}" ${t.done?'checked':''} aria-label="Виконано">`}<span>${esc(t.text)}</span><button class="btn ghost" data-kindswap="${t.id}" title="${isNote(t)?'Зробити задачею':'Зробити нотаткою'}">${isNote(t)?'→ задача':'→ нотатка'}</button><button class="btn ghost" data-deltask="${t.id}" aria-label="Видалити">✕</button></div>`).join(''):`<div class="mono">Ще нічого немає</div>`;
+  box.innerHTML=ts.length?sorted.map(t=>`<div class="d-task${t.done?' done':''}${isNote(t)?' note':''}">${isNote(t)?'':`<input type="checkbox" data-toggle="${ui.open.id}:${t.id}" ${t.done?'checked':''} aria-label="Виконано"><span class="nb" title="Задача">!</span>`}<span>${esc(t.text)}</span><button class="btn ghost" data-kindswap="${t.id}" title="${isNote(t)?'Зробити задачею':'Зробити нотаткою'}">${isNote(t)?'→ задача':'→ нотатка'}</button><button class="btn ghost" data-deltask="${t.id}" aria-label="Видалити">✕</button></div>`).join(''):`<div class="mono">Ще нічого немає</div>`;
 }
 function closeDrawer(){ui.open=null;$('#drawer').hidden=true;$('#scrim').hidden=true}
 
