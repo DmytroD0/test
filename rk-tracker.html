@@ -165,7 +165,14 @@ table.setup select:focus,table.setup input:focus{border-color:var(--accent);back
 .d-task input[type=checkbox]{margin-top:4px;accent-color:var(--ok)}
 .d-task span{flex:1;min-width:0;word-break:break-word}
 .d-task.done span{text-decoration:line-through;color:var(--muted)}
-.add-task{display:flex;gap:8px}
+.add-task{display:flex;gap:8px;flex-wrap:wrap}
+.add-task input{flex:1 1 200px}
+.note-btn{border-color:var(--accent);color:var(--accent)}
+.hint{font-size:12px;color:var(--muted)}
+.nb{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:12px;line-height:1;flex:none;margin-top:1px}
+.task.note,.d-task.note{background:var(--accent-soft);border-radius:6px;padding:4px 8px}
+.note-line{display:flex;gap:6px;align-items:flex-start;margin-top:3px;color:var(--accent)}
+.d-task .btn.ghost{font-size:12px;padding:2px 6px}
 .add-task input{flex:1;min-width:0;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--sunk)}
 .d-foot{display:flex;justify-content:space-between;gap:8px;margin-top:auto;padding-top:14px;border-top:1px solid var(--line)}
 .saved{font-size:12px;color:var(--ok);align-self:center}
@@ -223,7 +230,9 @@ const bmsOf=sid=>[...S.bms].filter(([,b])=>sid===NONE?!S.socs.has(b.soc):b.soc==
 const allSocs=()=>{const l=socsSorted();if(bmsOf(NONE).length)l.push([NONE,{name:'Без основи'}]);return l};
 const rkNum=r=>parseInt(String(r.code||'').replace(/\D/g,''))||999;
 const rksOf=bid=>[...S.rks].filter(([,r])=>r.bm===bid).sort((a,b)=>rkNum(a[1])-rkNum(b[1])||(a[1].order||0)-(b[1].order||0));
-const openTasks=r=>(r.tasks||[]).filter(t=>!t.done);
+const isNote=t=>t.kind==='note';
+const openTasks=r=>(r.tasks||[]).filter(t=>!t.done&&!isNote(t));
+const notesOf=r=>(r.tasks||[]).filter(isNote);
 
 function toast(msg){const t=$('#toast');t.textContent=msg;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,2600)}
 
@@ -318,7 +327,7 @@ function linkHtml(u){
   return `<a class="link" href="${esc(u)}" target="_blank" rel="noopener" data-stop>${esc(host)}</a>`;
 }
 function rowHtml(rid,r){
-  const st=r.status||'prep', ot=openTasks(r);
+  const st=r.status||'prep', ot=openTasks(r), nt=notesOf(r);
   return `<tr class="st-${st}" data-rk="${rid}" tabindex="0">
     <td><span class="code">${esc(r.code||'—')}</span></td>
     <td><button class="pill st-${st}" data-cycle="${rid}" title="Натисни, щоб змінити статус"><span class="dot"></span>${STATUS[st]}</button></td>
@@ -327,7 +336,7 @@ function rowHtml(rid,r){
     <td>${r.approach?`<span class="appr">${esc(r.approach)}</span>`:''}</td>
     <td>${linkHtml(r.link)}</td>
     <td>${esc(r.page)}</td>
-    <td class="tasks-cell">${ot.length?`<span class="tn">${ot.length}</span>${esc(ot[0].text)}${ot.length>1?` <span class="more">+${ot.length-1}</span>`:''}`:''}</td></tr>`;
+    <td class="tasks-cell">${ot.length?`<div><span class="tn">${ot.length}</span>${esc(ot[0].text)}${ot.length>1?` <span class="more">+${ot.length-1}</span>`:''}</div>`:''}${nt.length?`<div class="note-line"><span class="nb" title="Нотатка">!</span><span>${esc(nt[0].text)}${nt.length>1?` <span class="more">+${nt.length-1}</span>`:''}</span></div>`:''}</td></tr>`;
 }
 
 function renderTasks(){
@@ -339,10 +348,10 @@ function renderTasks(){
     for(const [bid,b] of bmsOf(sid)){
       let bh='';
       for(const [rid,r] of rksOf(bid)){
-        const ts=(r.tasks||[]).filter(t=>(ui.showDone||!t.done)&&(!ui.q||nameMatch(t.text,r.code,r.approach,r.offer,b.name,s.name)));
+        const ts=(r.tasks||[]).filter(t=>(isNote(t)||ui.showDone||!t.done)&&(!ui.q||nameMatch(t.text,r.code,r.approach,r.offer,b.name,s.name)));
         if(!ts.length)continue;
         bh+=`<div class="tv-line"><button class="tv-rk" data-open="${rid}">${esc(r.code||'РК')}</button>${r.approach?`<span class="appr">${esc(r.approach)}</span>`:'<span></span>'}
-          <div class="tv-tasks">${ts.map(t=>`<label class="task${t.done?' done':''}"><input type="checkbox" data-toggle="${rid}:${t.id}" ${t.done?'checked':''}><span>${esc(t.text)}</span></label>`).join('')}</div></div>`;
+          <div class="tv-tasks">${ts.map(t=>isNote(t)?`<div class="task note"><span class="nb" title="Нотатка">!</span><span>${esc(t.text)}</span></div>`:`<label class="task${t.done?' done':''}"><input type="checkbox" data-toggle="${rid}:${t.id}" ${t.done?'checked':''}><span>${esc(t.text)}</span></label>`).join('')}</div></div>`;
       }
       if(bh)sh+=`<div class="tv-bm"><h3>БМ · ${esc(b.name)}</h3>${bh}</div>`;
     }
@@ -382,7 +391,7 @@ function reportText(){
     const lines=[];
     for(const [bid,b] of bmsOf(sid)){
       const bl=[];
-      for(const [,r] of rksOf(bid)){const ot=openTasks(r);if(ot.length)bl.push(`${r.code}${r.approach?' - '+r.approach:''} - ${ot.map(t=>t.text).join('; ')}`)}
+      for(const [,r] of rksOf(bid)){const ot=openTasks(r),nt=notesOf(r);if(ot.length||nt.length)bl.push(`${r.code}${r.approach?' - '+r.approach:''} - ${[...ot.map(t=>t.text),...nt.map(t=>'увага: '+t.text)].join('; ')}`)}
       if(bl.length)lines.push(`БМ - ${b.name}`,...bl);
     }
     if(lines.length)out.push([s.name,...lines].join('\n'));
@@ -417,8 +426,9 @@ function openDrawer(col,id,focusName){
       ${field('notes','Нотатки',o.notes,{area:1})}
       ${field('bm','БМ',o.bm,{w:1,select:bmOpts})}
     </div>
-    <div class="d-sec"><h4>Задачі</h4><div id="dTasks"></div>
-      <form class="add-task" id="addTask"><input id="newTask" placeholder="Що зробити: масштаб бюджетами, унікалізація…" aria-label="Нова задача"><button class="btn primary">Додати</button></form></div>`;
+    <div class="d-sec"><h4>Задачі і нотатки</h4><div id="dTasks"></div>
+      <form class="add-task" id="addTask"><input id="newTask" placeholder="Задача або на що звернути увагу…" aria-label="Текст задачі або нотатки"><button class="btn primary" value="task">+ Задача</button><button class="btn note-btn" value="note">+ Нотатка</button></form>
+      <div class="hint">Задачу відмічаєш як виконану. Нотатка просто висить як нагадування, на що дивитись.</div></div>`;
   }
   d.innerHTML=`<div class="d-h"><span class="crumb">${esc(crumb||kind)}</span><span class="saved" id="saved" hidden>Збережено</span><button class="btn ghost" data-act="close" aria-label="Закрити">✕</button></div>
     <h2 class="d-title" id="dTitle">${esc(title||kind)}</h2>${h}
@@ -431,7 +441,8 @@ function refreshDrawerTasks(){
   if(!ui.open||ui.open.col!=='rks')return;const box=$('#dTasks');if(!box)return;
   const r=S.rks.get(ui.open.id);if(!r)return closeDrawer();
   const ts=r.tasks||[];
-  box.innerHTML=ts.length?ts.map(t=>`<div class="d-task${t.done?' done':''}"><input type="checkbox" data-toggle="${ui.open.id}:${t.id}" ${t.done?'checked':''} aria-label="Виконано"><span>${esc(t.text)}</span><button class="btn ghost" data-deltask="${t.id}" aria-label="Видалити задачу">✕</button></div>`).join(''):`<div class="mono">Задач немає</div>`;
+  const sorted=[...ts.filter(isNote),...ts.filter(t=>!isNote(t))];
+  box.innerHTML=ts.length?sorted.map(t=>`<div class="d-task${t.done?' done':''}${isNote(t)?' note':''}">${isNote(t)?'<span class="nb" title="Нотатка">!</span>':`<input type="checkbox" data-toggle="${ui.open.id}:${t.id}" ${t.done?'checked':''} aria-label="Виконано">`}<span>${esc(t.text)}</span><button class="btn ghost" data-kindswap="${t.id}" title="${isNote(t)?'Зробити задачею':'Зробити нотаткою'}">${isNote(t)?'→ задача':'→ нотатка'}</button><button class="btn ghost" data-deltask="${t.id}" aria-label="Видалити">✕</button></div>`).join(''):`<div class="mono">Ще нічого немає</div>`;
 }
 function closeDrawer(){ui.open=null;$('#drawer').hidden=true;$('#scrim').hidden=true}
 
@@ -467,6 +478,7 @@ document.addEventListener('click',e=>{
   if(ds.cycle){const r=S.rks.get(ds.cycle);const order=['active','prep','stop'];const n=order[(order.indexOf(r.status||'prep')+1)%3];patch('rks',ds.cycle,{status:n});toast('Статус: '+STATUS[n]);return}
   if(t.id==='themeBtn'){setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');return}
   if(ds.toggle){const [r,i]=ds.toggle.split(':');toggleTask(r,i);return}
+  if(ds.kindswap){const r=S.rks.get(ui.open.id);patch('rks',ui.open.id,{tasks:(r.tasks||[]).map(x=>x.id===ds.kindswap?{...x,kind:isNote(x)?'task':'note',done:false}:{...x})});return}
   if(ds.deltask){const r=S.rks.get(ui.open.id);patch('rks',ui.open.id,{tasks:(r.tasks||[]).filter(x=>x.id!==ds.deltask).map(x=>({...x}))});return}
   if(t.id==='addSoc'||ds.act==='addSoc'){addSoc();return}
   if(ds.act==='close'){closeDrawer();return}
@@ -490,7 +502,8 @@ $('#drawer').addEventListener('change',e=>{
 });
 $('#drawer').addEventListener('submit',e=>{
   e.preventDefault();const inp=$('#newTask');const v=inp.value.trim();if(!v||!ui.open)return;
-  const r=S.rks.get(ui.open.id);patch('rks',ui.open.id,{tasks:[...(r.tasks||[]).map(x=>({...x})),{id:uid(),text:v,done:false}]});inp.value='';inp.focus();
+  const kind=e.submitter&&e.submitter.value==='note'?'note':'task';
+  const r=S.rks.get(ui.open.id);patch('rks',ui.open.id,{tasks:[...(r.tasks||[]).map(x=>({...x})),{id:uid(),text:v,done:false,kind}]});inp.value='';inp.focus();
 });
 document.addEventListener('change',e=>{
   if(e.target.id==='showDone'){ui.showDone=e.target.checked;render();return}
