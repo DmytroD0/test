@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Silverleaf Living — Healthy Aging After 40</title>
+  <meta name="description" content="Practical, evidence-based guidance for staying strong, sharp and active after 40: joints, blood pressure, heart health, memory and everyday habits.">
+  <meta property="og:title" content="Silverleaf Living — Healthy Aging After 40">
+  <meta property="og:description" content="Practical, evidence-based guidance for staying strong, sharp and active after 40.">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #14302f;
+      --ink-soft: #4a5f5d;
+      --teal: #1f5f5b;
+      --teal-deep: #123f3c;
+      --amber: #e3a23b;
+      --amber-soft: #fbedd3;
+      --sage: #e6efe9;
+      --cream: #fbf8f2;
+      --white: #ffffff;
+      --line: #dfe6e1;
+      --radius: 18px;
+      --shadow: 0 10px 30px rgba(20, 48, 47, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "DM Sans", system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--cream);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3, h4 { font-family: "Fraunces", Georgia, serif; line-height: 1.2; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; }
+
+    .container { width: 100%; max-width: 1160px; margin: 0 auto; padding: 0 20px; }
+    section { padding: 88px 0; }
+
+    .section-head { max-width: 640px; margin-bottom: 44px; }
+    .section-head.center { margin-left: auto; margin-right: auto; text-align: center; }
+    .eyebrow {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 12px;
+    }
+    .section-head h2 { font-size: clamp(28px, 4vw, 40px); margin-bottom: 12px; }
+    .section-head p { color: var(--ink-soft); font-size: 18px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 26px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 16px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform .15s, background .15s, color .15s;
+      font-family: inherit;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary { background: var(--amber); color: var(--ink); }
+    .btn-primary:hover { background: #d4912a; }
+    .btn-ghost { border-color: rgba(255,255,255,.5); color: var(--white); }
+    .btn-ghost:hover { background: rgba(255,255,255,.1); }
+    .btn-dark { background: var(--teal); color: var(--white); }
+    .btn-dark:hover { background: var(--teal-deep); }
+
+    /* Header */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(251, 248, 242, .92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav { display: flex; align-items: center; justify-content: space-between; height: 72px; gap: 20px; }
+    .logo { display: flex; align-items: center; gap: 10px; font-family: "Fraunces", serif; font-weight: 700; font-size: 22px; color: var(--teal-deep); }
+    .logo-mark {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--teal); color: var(--amber);
+      display: grid; place-items: center; font-size: 18px;
+    }
+    .nav-links { display: flex; gap: 26px; list-style: none; font-weight: 500; font-size: 15px; }
+    .nav-links a { color: var(--ink-soft); transition: color .15s; }
+    .nav-links a:hover { color: var(--teal); }
+    .nav .btn { padding: 10px 20px; font-size: 14px; }
+    .menu-toggle { display: none; background: none; border: 0; font-size: 26px; cursor: pointer; color: var(--ink); }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, var(--teal-deep) 0%, var(--teal) 100%);
+      color: var(--white);
+      padding: 96px 0 120px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -120px; bottom: -160px;
+      width: 480px; height: 480px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(227,162,59,.35), transparent 70%);
+    }
+    .hero-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 48px; align-items: center; position: relative; z-index: 1; }
+    .hero .eyebrow { color: var(--amber); }
+    .hero h1 { font-size: clamp(36px, 5.5vw, 60px); margin-bottom: 20px; }
+    .hero h1 em { font-style: italic; color: var(--amber); }
+    .hero p { font-size: 19px; opacity: .9; max-width: 560px; margin-bottom: 32px; }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+    .hero-card {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 24px;
+      padding: 28px;
+    }
+    .hero-card h3 { font-size: 20px; margin-bottom: 16px; }
+    .check-row { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-top: 1px solid rgba(255,255,255,.12); }
+    .check-row:first-of-type { border-top: 0; }
+    .check-dot {
+      flex: 0 0 26px; height: 26px; border-radius: 50%;
+      background: var(--amber); color: var(--ink);
+      display: grid; place-items: center; font-size: 14px; font-weight: 700;
+    }
+    .check-row span { font-size: 15px; opacity: .92; }
+
+    /* Numbers */
+    .numbers { padding: 0; margin-top: -56px; position: relative; z-index: 2; }
+    .numbers-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      background: var(--white); border-radius: var(--radius);
+      box-shadow: var(--shadow); overflow: hidden;
+    }
+    .number { padding: 28px 24px; border-left: 1px solid var(--line); }
+    .number:first-child { border-left: 0; }
+    .number strong { display: block; font-family: "Fraunces", serif; font-size: 32px; color: var(--teal); }
+    .number span { color: var(--ink-soft); font-size: 14px; }
+
+    /* Conditions */
+    .conditions-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .condition {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 26px;
+      display: flex; gap: 18px;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .condition:hover { border-color: var(--teal); box-shadow: var(--shadow); }
+    .condition-icon {
+      flex: 0 0 52px; height: 52px; border-radius: 14px;
+      background: var(--sage); display: grid; place-items: center; font-size: 26px;
+    }
+    .condition h3 { font-size: 19px; margin-bottom: 6px; }
+    .condition p { color: var(--ink-soft); font-size: 15px; }
+
+    /* Joints */
+    .joints { background: var(--sage); }
+    .joints-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+    .joint {
+      background: var(--white); border-radius: var(--radius);
+      padding: 30px; position: relative; overflow: hidden;
+    }
+    .joint-num {
+      position: absolute; top: 18px; right: 24px;
+      font-family: "Fraunces", serif; font-size: 56px; font-weight: 700;
+      color: var(--sage); line-height: 1;
+    }
+    .joint-emoji { font-size: 34px; margin-bottom: 12px; }
+    .joint h3 { font-size: 22px; margin-bottom: 8px; }
+    .joint p { color: var(--ink-soft); margin-bottom: 16px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag {
+      font-size: 13px; font-weight: 500;
+      background: var(--amber-soft); color: #7a5313;
+      padding: 6px 12px; border-radius: 999px;
+    }
+
+    /* Blood pressure */
+    .bp-layout { display: grid; grid-template-columns: .9fr 1.1fr; gap: 48px; align-items: start; }
+    .bp-chart {
+      background: var(--white); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 28px;
+    }
+    .bp-chart h3 { font-size: 20px; margin-bottom: 4px; }
+    .bp-chart small { color: var(--ink-soft); display: block; margin-bottom: 18px; }
+    .bp-row { display: grid; grid-template-columns: 12px 1fr auto; gap: 14px; align-items: center; padding: 12px 0; border-top: 1px solid var(--line); font-size: 15px; }
+    .bp-row:first-of-type { border-top: 0; }
+    .bp-swatch { width: 12px; height: 12px; border-radius: 50%; }
+    .bp-row b { font-weight: 700; font-variant-numeric: tabular-nums; }
+    .bp-list { display: grid; gap: 16px; }
+    .bp-item {
+      display: grid; grid-template-columns: 56px 1fr; gap: 18px;
+      padding: 22px; border-radius: var(--radius);
+      border: 1px solid var(--line); background: var(--white);
+    }
+    .bp-item .condition-icon { width: 56px; height: 56px; background: var(--amber-soft); }
+    .bp-item h3 { font-size: 19px; margin-bottom: 4px; }
+    .bp-item p { color: var(--ink-soft); font-size: 15px; }
+
+    /* Heart */
+    .heart { background: var(--teal-deep); color: var(--white); }
+    .heart .eyebrow { color: var(--amber); }
+    .heart .section-head p { color: rgba(255,255,255,.75); }
+    .heart-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(255,255,255,.12); border-radius: var(--radius); overflow: hidden; }
+    .heart-item { background: var(--teal-deep); padding: 30px; }
+    .heart-item .emoji { font-size: 30px; margin-bottom: 14px; }
+    .heart-item h3 { font-size: 20px; margin-bottom: 8px; }
+    .heart-item p { color: rgba(255,255,255,.75); font-size: 15px; margin-bottom: 14px; }
+    .heart-item .benefit { color: var(--amber); font-weight: 700; font-size: 14px; }
+
+    /* Memory */
+    .memory-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; counter-reset: step; }
+    .memory-step { padding-top: 22px; border-top: 3px solid var(--teal); }
+    .memory-step::before {
+      counter-increment: step;
+      content: "0" counter(step);
+      display: block; font-family: "Fraunces", serif;
+      font-size: 15px; font-weight: 700; color: var(--amber);
+      margin-bottom: 10px;
+    }
+    .memory-step h3 { font-size: 20px; margin-bottom: 8px; }
+    .memory-step p { color: var(--ink-soft); font-size: 15px; }
+
+    /* Daily habits */
+    .habits { background: var(--amber-soft); }
+    .habits-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .habit { background: var(--white); border-radius: var(--radius); padding: 26px; text-align: center; }
+    .habit .emoji { font-size: 36px; margin-bottom: 10px; }
+    .habit h3 { font-size: 18px; margin-bottom: 4px; }
+    .habit p { color: var(--ink-soft); font-size: 15px; }
+
+    /* About */
+    .about-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 56px; align-items: center; }
+    .about-grid p { color: var(--ink-soft); font-size: 17px; margin-bottom: 16px; }
+    .about-list { list-style: none; margin: 24px 0 30px; display: grid; gap: 12px; }
+    .about-list li { display: flex; gap: 12px; align-items: center; font-weight: 500; }
+    .about-list .check-dot { background: var(--teal); color: var(--white); }
+    .about-visual {
+      aspect-ratio: 1 / 1; border-radius: 32px;
+      background: radial-gradient(circle at 30% 30%, var(--amber-soft), var(--sage) 70%);
+      display: grid; place-items: center; font-size: 140px;
+    }
+
+    /* Newsletter */
+    .newsletter { padding: 0 0 88px; }
+    .newsletter-box {
+      background: var(--teal); color: var(--white);
+      border-radius: 28px; padding: 56px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center;
+    }
+    .newsletter-box h2 { font-size: clamp(26px, 3.5vw, 36px); margin-bottom: 10px; }
+    .newsletter-box p { opacity: .85; }
+    .newsletter-form { display: flex; gap: 10px; flex-wrap: wrap; }
+    .newsletter-form input {
+      flex: 1 1 220px; padding: 15px 20px; border-radius: 999px;
+      border: 0; font-size: 16px; font-family: inherit;
+    }
+    .form-note { font-size: 13px; opacity: .7; margin-top: 10px; }
+
+    /* Footer */
+    footer { background: #0d2b29; color: rgba(255,255,255,.75); padding: 64px 0 28px; font-size: 15px; }
+    .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1.2fr; gap: 36px; margin-bottom: 40px; }
+    footer h4 { color: var(--white); font-size: 17px; margin-bottom: 16px; }
+    footer ul { list-style: none; display: grid; gap: 10px; }
+    footer a:hover { color: var(--amber); }
+    footer .logo { color: var(--white); margin-bottom: 14px; }
+    .disclaimer {
+      border-top: 1px solid rgba(255,255,255,.12);
+      padding-top: 24px; font-size: 13px; color: rgba(255,255,255,.55);
+      display: grid; gap: 8px;
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(13, 43, 41, .6);
+      display: none; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal.open { display: flex; }
+    .modal-card {
+      background: var(--white); border-radius: 24px; padding: 40px 32px;
+      max-width: 420px; width: 100%; text-align: center; position: relative;
+    }
+    .modal-card .emoji { font-size: 48px; margin-bottom: 10px; }
+    .modal-card h2 { margin-bottom: 8px; }
+    .modal-card p { color: var(--ink-soft); }
+    .modal-close {
+      position: absolute; top: 12px; right: 16px;
+      background: none; border: 0; font-size: 28px; cursor: pointer; color: var(--ink-soft);
+    }
+
+    /* Responsive */
+    @media (max-width: 980px) {
+      .nav-links {
+        display: none; position: absolute; top: 72px; left: 0; right: 0;
+        flex-direction: column; gap: 0; background: var(--cream);
+        border-bottom: 1px solid var(--line);
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a { display: block; padding: 14px 20px; }
+      .menu-toggle { display: block; }
+      .nav .btn { display: none; }
+      .hero-grid, .bp-layout, .about-grid, .newsletter-box { grid-template-columns: 1fr; }
+      .conditions-grid, .heart-grid { grid-template-columns: repeat(2, 1fr); }
+      .memory-grid, .habits-grid, .numbers-grid { grid-template-columns: repeat(2, 1fr); }
+      .number:nth-child(3) { border-left: 0; }
+      .number:nth-child(n+3) { border-top: 1px solid var(--line); }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .about-visual { max-width: 360px; font-size: 110px; }
+    }
+    @media (max-width: 640px) {
+      section { padding: 64px 0; }
+      .hero { padding: 64px 0 100px; }
+      .conditions-grid, .joints-grid, .heart-grid, .memory-grid, .habits-grid, .footer-grid { grid-template-columns: 1fr; }
+      .newsletter-box { padding: 36px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container nav">
+      <a href="#home" class="logo"><span class="logo-mark">🌿</span> Silverleaf Living</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#conditions">Common Conditions</a></li>
+        <li><a href="#joints">Joints &amp; Bones</a></li>
+        <li><a href="#blood-pressure">Blood Pressure</a></li>
+        <li><a href="#heart">Heart</a></li>
+        <li><a href="#memory">Memory</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+      <a href="#newsletter" class="btn btn-dark">Free Guide</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">Healthy aging, made practical</span>
+          <h1>Your best decades<br>can still be <em>ahead of you.</em></h1>
+          <p>Simple, evidence-based habits for stronger joints, a healthier heart and a sharper mind — written in plain English for adults 40 and up.</p>
+          <div class="hero-actions">
+            <a href="#conditions" class="btn btn-primary">Start here →</a>
+            <a href="#newsletter" class="btn btn-ghost">Get the free guide</a>
+          </div>
+        </div>
+        <div class="hero-card">
+          <h3>Your 40+ health checklist</h3>
+          <div class="check-row"><span class="check-dot">✓</span><span>Know your blood pressure numbers</span></div>
+          <div class="check-row"><span class="check-dot">✓</span><span>Move at least 150 minutes a week</span></div>
+          <div class="check-row"><span class="check-dot">✓</span><span>Schedule a yearly checkup &amp; screenings</span></div>
+          <div class="check-row"><span class="check-dot">✓</span><span>Protect 7+ hours of sleep a night</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key numbers -->
+    <section class="numbers">
+      <div class="container">
+        <div class="numbers-grid">
+          <div class="number"><strong>150 min</strong><span>of moderate activity per week is the adult guideline</span></div>
+          <div class="number"><strong>&lt;120/80</strong><span>mm Hg is considered normal blood pressure</span></div>
+          <div class="number"><strong>2,300 mg</strong><span>daily sodium limit for most adults</span></div>
+          <div class="number"><strong>7+ hrs</strong><span>of sleep per night recommended for adults</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Conditions -->
+    <section id="conditions">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Know what to watch for</span>
+          <h2>Common health concerns after 40</h2>
+          <p>Many age-related conditions develop quietly. Early awareness and regular screenings make a real difference.</p>
+        </div>
+        <div class="conditions-grid">
+          <div class="condition">
+            <div class="condition-icon">🩸</div>
+            <div><h3>Type 2 Diabetes</h3><p>Keeping blood sugar in a healthy range helps prevent long-term complications.</p></div>
+          </div>
+          <div class="condition">
+            <div class="condition-icon">🫁</div>
+            <div><h3>Lung Health</h3><p>Stay active, avoid smoke and keep up with recommended vaccines.</p></div>
+          </div>
+          <div class="condition">
+            <div class="condition-icon">🦴</div>
+            <div><h3>Osteoporosis</h3><p>Calcium, vitamin D and strength training help keep bones dense.</p></div>
+          </div>
+          <div class="condition">
+            <div class="condition-icon">👓</div>
+            <div><h3>Vision Changes</h3><p>Regular eye exams catch cataracts and glaucoma early.</p></div>
+          </div>
+          <div class="condition">
+            <div class="condition-icon">🪥</div>
+            <div><h3>Oral Health</h3><p>Healthy gums are linked to overall health — floss daily and see your dentist.</p></div>
+          </div>
+          <div class="condition">
+            <div class="condition-icon">🌙</div>
+            <div><h3>Sleep Quality</h3><p>Consistent, restful sleep supports mood, metabolism and memory.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Joints -->
+    <section class="joints" id="joints">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Move with ease</span>
+          <h2>Caring for your joints &amp; bones</h2>
+          <p>Small daily adjustments can keep you moving comfortably for years to come.</p>
+        </div>
+        <div class="joints-grid">
+          <div class="joint">
+            <span class="joint-num">01</span>
+            <div class="joint-emoji">🦵</div>
+            <h3>Knees</h3>
+            <p>Maintain a healthy weight, strengthen the muscles around your knees and choose low-impact activities like cycling or swimming.</p>
+            <div class="tags"><span class="tag">Less strain</span><span class="tag">Better mobility</span></div>
+          </div>
+          <div class="joint">
+            <span class="joint-num">02</span>
+            <div class="joint-emoji">🦶</div>
+            <h3>Ankles &amp; Feet</h3>
+            <p>Wear supportive shoes and stretch your calves and arches daily to stay steady on your feet.</p>
+            <div class="tags"><span class="tag">Fewer aches</span><span class="tag">Better balance</span></div>
+          </div>
+          <div class="joint">
+            <span class="joint-num">03</span>
+            <div class="joint-emoji">✋</div>
+            <h3>Hands &amp; Wrists</h3>
+            <p>Gentle hand exercises and regular breaks from repetitive tasks help keep fingers flexible.</p>
+            <div class="tags"><span class="tag">Stronger grip</span><span class="tag">Less stiffness</span></div>
+          </div>
+          <div class="joint">
+            <span class="joint-num">04</span>
+            <div class="joint-emoji">🧘</div>
+            <h3>Back &amp; Hips</h3>
+            <p>Good posture when sitting, standing and lifting — plus core work — protects your spine.</p>
+            <div class="tags"><span class="tag">Posture support</span><span class="tag">Easier walking</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Blood pressure -->
+    <section id="blood-pressure">
+      <div class="container bp-layout">
+        <div>
+          <div class="section-head">
+            <span class="eyebrow">Know your numbers</span>
+            <h2>Keep your blood pressure in check</h2>
+            <p>High blood pressure often has no symptoms. Knowing where you stand lowers your risk of heart disease and stroke.</p>
+          </div>
+          <div class="bp-chart">
+            <h3>Blood pressure categories</h3>
+            <small>Adults, mm Hg (systolic / diastolic)</small>
+            <div class="bp-row"><span class="bp-swatch" style="background:#3f9a6b"></span><span>Normal</span><b>&lt;120 and &lt;80</b></div>
+            <div class="bp-row"><span class="bp-swatch" style="background:#e3c13b"></span><span>Elevated</span><b>120–129 and &lt;80</b></div>
+            <div class="bp-row"><span class="bp-swatch" style="background:#e3a23b"></span><span>Stage 1 high</span><b>130–139 or 80–89</b></div>
+            <div class="bp-row"><span class="bp-swatch" style="background:#d0623f"></span><span>Stage 2 high</span><b>140+ or 90+</b></div>
+          </div>
+        </div>
+        <div class="bp-list">
+          <div class="bp-item">
+            <div class="condition-icon">🥗</div>
+            <div><h3>Try the DASH eating plan</h3><p>Cut back on sodium and load up on fruits, vegetables, whole grains and low-fat dairy.</p></div>
+          </div>
+          <div class="bp-item">
+            <div class="condition-icon">🚶</div>
+            <div><h3>Stay active</h3><p>Aim for 30 minutes of brisk walking or similar activity, five days a week.</p></div>
+          </div>
+          <div class="bp-item">
+            <div class="condition-icon">🧘‍♀️</div>
+            <div><h3>Manage stress</h3><p>Deep breathing, time outdoors and good rest all help your body recover.</p></div>
+          </div>
+          <div class="bp-item">
+            <div class="condition-icon">📈</div>
+            <div><h3>Track at home</h3><p>Log your readings and bring them to appointments so your doctor sees the full picture.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Heart -->
+    <section class="heart" id="heart">
+      <div class="container">
+        <div class="section-head center">
+          <span class="eyebrow">Heart health</span>
+          <h2>Six habits your heart will thank you for</h2>
+          <p>Heart disease is the leading cause of death in the U.S. — and many risk factors are within your control.</p>
+        </div>
+        <div class="heart-grid">
+          <div class="heart-item"><div class="emoji">🐟</div><h3>Eat heart-smart</h3><p>Fatty fish, beans, nuts, olive oil and whole grains.</p><span class="benefit">Supports healthy cholesterol</span></div>
+          <div class="heart-item"><div class="emoji">🚭</div><h3>Quit smoking</h3><p>Your risk starts dropping soon after your last cigarette.</p><span class="benefit">Lower cardiovascular risk</span></div>
+          <div class="heart-item"><div class="emoji">🥂</div><h3>Drink less</h3><p>If you drink, keep it moderate — or skip it altogether.</p><span class="benefit">Helps blood pressure</span></div>
+          <div class="heart-item"><div class="emoji">⚖️</div><h3>Healthy weight</h3><p>A BMI of 18.5–24.9 and a healthy waist size are good targets.</p><span class="benefit">Less work for your heart</span></div>
+          <div class="heart-item"><div class="emoji">💊</div><h3>Follow your plan</h3><p>Take medications as prescribed and never stop without talking to your doctor.</p><span class="benefit">Better long-term control</span></div>
+          <div class="heart-item"><div class="emoji">🩺</div><h3>Annual checkup</h3><p>Check cholesterol, blood sugar and blood pressure every year.</p><span class="benefit">Catch issues early</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Memory -->
+    <section id="memory">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Stay sharp</span>
+          <h2>Keep your mind active at every age</h2>
+          <p>Your brain stays adaptable throughout life. Give it something new to work on.</p>
+        </div>
+        <div class="memory-grid">
+          <div class="memory-step"><h3>Read every day</h3><p>Books, long articles, anything that makes you think and grows your vocabulary.</p></div>
+          <div class="memory-step"><h3>Play brain games</h3><p>Chess, crosswords, sudoku and card games challenge memory and strategy.</p></div>
+          <div class="memory-step"><h3>Learn something new</h3><p>A language, an instrument, a craft — novelty builds new connections.</p></div>
+          <div class="memory-step"><h3>Keep moving</h3><p>Exercise boosts blood flow to the brain and supports mood.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Habits -->
+    <section class="habits">
+      <div class="container">
+        <div class="section-head center">
+          <span class="eyebrow">Everyday wins</span>
+          <h2>Little habits, big difference</h2>
+          <p>Four easy things to build into your day starting this week.</p>
+        </div>
+        <div class="habits-grid">
+          <div class="habit"><div class="emoji">💧</div><h3>Stay hydrated</h3><p>Keep a water bottle within reach all day.</p></div>
+          <div class="habit"><div class="emoji">🛌</div><h3>Sleep well</h3><p>7–9 hours on a consistent schedule.</p></div>
+          <div class="habit"><div class="emoji">🥕</div><h3>Eat the rainbow</h3><p>Fill half your plate with fruits and veggies.</p></div>
+          <div class="habit"><div class="emoji">🤝</div><h3>Stay connected</h3><p>Friends, family and community lift your mood.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section id="about">
+      <div class="container about-grid">
+        <div>
+          <span class="eyebrow">About us</span>
+          <div class="section-head" style="margin-bottom:20px"><h2>Why Silverleaf Living?</h2></div>
+          <p>Silverleaf Living is an educational resource for adults over 40 who want clear, trustworthy information about staying healthy as they age.</p>
+          <p>We believe aging well isn't only about avoiding illness — it's about staying active, curious and connected to the people and things you love.</p>
+          <ul class="about-list">
+            <li><span class="check-dot">✓</span> Based on public health guidelines</li>
+            <li><span class="check-dot">✓</span> Written in plain, friendly language</li>
+            <li><span class="check-dot">✓</span> Reviewed and updated regularly</li>
+          </ul>
+          <a href="#contact" class="btn btn-dark">Contact us</a>
+        </div>
+        <div class="about-visual" aria-hidden="true">🌿</div>
+      </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter" id="newsletter">
+      <div class="container">
+        <div class="newsletter-box">
+          <div>
+            <h2>Get our free Healthy After 40 guide</h2>
+            <p>Join our newsletter for one practical tip a week, plus a printable checklist to bring to your next checkup.</p>
+          </div>
+          <div>
+            <form class="newsletter-form" id="newsletterForm">
+              <input type="email" name="email" placeholder="Your email address" required aria-label="Email address">
+              <button type="submit" class="btn btn-primary">Send me the guide</button>
+            </form>
+            <p class="form-note">No spam. Unsubscribe anytime. See our <a href="privacy.html" style="text-decoration:underline">Privacy Policy</a>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="contact">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="#home" class="logo"><span class="logo-mark">🌿</span> Silverleaf Living</a>
+          <p>Practical healthy-aging guidance for adults 40 and over.</p>
+        </div>
+        <div>
+          <h4>Topics</h4>
+          <ul>
+            <li><a href="#conditions">Common Conditions</a></li>
+            <li><a href="#joints">Joints &amp; Bones</a></li>
+            <li><a href="#blood-pressure">Blood Pressure</a></li>
+            <li><a href="#heart">Heart Health</a></li>
+            <li><a href="#memory">Memory</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li>📞 <a href="tel:+15555550142">(555) 555-0142</a></li>
+            <li>✉️ <a href="mailto:hello@silverleafliving.com">hello@silverleafliving.com</a></li>
+            <li>📍 Austin, TX, USA</li>
+            <li>🕐 Mon–Fri, 9:00 AM – 5:00 PM CT</li>
+          </ul>
+        </div>
+      </div>
+      <div class="disclaimer">
+        <p>The content on this website is for general informational purposes only and is not a substitute for professional medical advice, diagnosis or treatment. Always consult your physician or another qualified health provider with questions about a medical condition. If you think you have a medical emergency, call 911.</p>
+        <p>© 2026 Silverleaf Living. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <button class="modal-close" id="modalClose" aria-label="Close">×</button>
+      <div class="emoji">🌿</div>
+      <h2 id="modalTitle">You're on the list!</h2>
+      <p>Thanks for subscribing. Check your inbox for your free Healthy After 40 guide.</p>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var menuToggle = document.getElementById("menuToggle");
+      var navLinks = document.getElementById("navLinks");
+      menuToggle.addEventListener("click", function () {
+        navLinks.classList.toggle("open");
+      });
+      navLinks.querySelectorAll("a").forEach(function (a) {
+        a.addEventListener("click", function () { navLinks.classList.remove("open"); });
+      });
+
+      var modal = document.getElementById("modal");
+      function closeModal() { modal.classList.remove("open"); }
+      document.getElementById("modalClose").addEventListener("click", closeModal);
+      modal.addEventListener("click", function (e) { if (e.target === modal) closeModal(); });
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeModal(); });
+
+      // TODO: connect to your email provider before going live.
+      document.getElementById("newsletterForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+        e.target.reset();
+        modal.classList.add("open");
+      });
+    })();
+  </script>
+</body>
+</html>
