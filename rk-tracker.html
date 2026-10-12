@@ -23,6 +23,7 @@
   --ok:#43c97f; --ok-soft:#163223; --warn:#e7a43c; --warn-soft:#3a2c14; --stop:#8890a3; --stop-soft:#252a35; --danger:#ef6b6b; --ok-row:#13281c; --warn-row:#2b2313; --soc-bg:#2f3c66; --soc-ink:#ffffff; --bm-bg:#2a2045; --bm-line:#a684f6; --bm-ink:#dccbff; --bm-head:#463b6b;
   color-scheme:dark}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{background:var(--bg);color:var(--ink);font:14px/1.45 var(--f-body);font-variant-numeric:tabular-nums}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
@@ -136,7 +137,12 @@ tbody tr.st-prep:hover td{background:var(--warn-soft)}
 .card:hover{border-color:var(--c)}
 .card.ist-done{opacity:.6}
 .card.ist-done .card-t{text-decoration:line-through}
-.card-t{white-space:pre-wrap;word-break:break-word;font-weight:500}
+.card-t{white-space:pre-wrap;word-break:break-word;font-weight:500;flex:1;min-width:0}
+.card-top{display:flex;gap:8px;align-items:flex-start}
+.grip{flex:none;cursor:grab;touch-action:none;user-select:none;color:var(--muted);font-weight:700;letter-spacing:-2px;padding:0 4px;border-radius:4px;line-height:1.3}
+.grip:hover{color:var(--ink);background:var(--sunk)}
+.card.dragging{opacity:.55;pointer-events:none;outline:2px dashed var(--c)}
+body.is-dragging{cursor:grabbing;user-select:none}
 .card-m{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .card-rk{font-size:12px;color:var(--muted)}
 .card-n{font-size:12.5px;color:var(--muted);white-space:pre-wrap}
@@ -426,6 +432,36 @@ function renderSetup(){
 
 function rkLabel(rid){const r=S.rks.get(rid);if(!r)return '';const b=S.bms.get(r.bm);return (b?b.name+' › ':'')+(r.code||'РК')}
 function rkOptions(cur){const o=[['','— не прив\'язано —']];for(const [si,sx] of allSocs())for(const [bi,bx] of bmsOf(si))for(const [ri,rx] of rksOf(bi))o.push([ri,sx.name+' › '+bx.name+' › '+(rx.code||'РК')+(rx.approach?' · '+rx.approach:'')]);return o}
+const ipos=i=>typeof i.pos==='number'?i.pos:-(i.created||0);
+let drag=null;
+document.addEventListener('pointerdown',e=>{
+  const g=e.target.closest('[data-grip]');if(!g)return;
+  const card=g.closest('.card');e.preventDefault();
+  drag={id:card.dataset.id,card,pending:false};card.classList.add('dragging');document.body.classList.add('is-dragging');
+});
+document.addEventListener('pointermove',e=>{
+  if(!drag)return;e.preventDefault();
+  if(e.clientY<70)window.scrollBy(0,-14);else if(e.clientY>innerHeight-70)window.scrollBy(0,14);
+  const el=document.elementFromPoint(e.clientX,e.clientY);if(!el)return;
+  const col=el.closest('.col');if(!col)return;
+  const over=el.closest('.card');
+  if(over&&over!==drag.card){const r=over.getBoundingClientRect();over.parentNode.insertBefore(drag.card,e.clientY<r.top+r.height/2?over:over.nextSibling)}
+  else if(!over){const cards=[...col.querySelectorAll('.card:not(.dragging)')];const last=cards[cards.length-1];
+    if(!cards.length){col.querySelector('.col-empty')?.remove();col.appendChild(drag.card)}
+    else if(e.clientY>last.getBoundingClientRect().bottom)last.after(drag.card);
+    else if(e.clientY<cards[0].getBoundingClientRect().top)cards[0].before(drag.card)}
+},{passive:false});
+function endDrag(){
+  if(!drag)return;const d=drag;drag=null;
+  d.card.classList.remove('dragging');document.body.classList.remove('is-dragging');
+  const col=d.card.closest('.col');if(!col)return render();
+  const type=col.dataset.type;
+  [...col.querySelectorAll('.card')].forEach((c,n)=>{const i=S.ideas.get(c.dataset.id);if(!i)return;
+    const pos=(n+1)*1000;if(i.pos!==pos||(i.type||'idea')!==type){const nv={...i,pos,type};S.ideas.set(c.dataset.id,nv);persist('ideas',c.dataset.id,nv)}});
+  render();
+}
+document.addEventListener('pointerup',endDrag);document.addEventListener('pointercancel',endDrag);
+
 function renderIdeas(){
   if(!$('#ideaForm')){
     $('#main').innerHTML=`<section class="idea-add"><form id="ideaForm" class="idea-form">
@@ -440,11 +476,12 @@ function renderIdeas(){
       <div id="ideaBoard" class="board"></div>`;
   }
   const list=[...S.ideas].filter(([,i])=>(ui.showIdeasDone||(i.status||'new')!=='done')&&(!ui.q||nameMatch(i.text,i.approach,i.note,rkLabel(i.rk))))
-    .sort((a,b)=>({work:0,new:1,done:2}[a[1].status||'new']-{work:0,new:1,done:2}[b[1].status||'new'])||(b[1].created||0)-(a[1].created||0));
+    .sort((a,b)=>((a[1].status==='done')-(b[1].status==='done'))||ipos(a[1])-ipos(b[1]));
+  if(drag){drag.pending=true;return}
   $('#ideaBoard').innerHTML=Object.entries(ITYPE).map(([k,l])=>{
     const items=list.filter(([,i])=>(i.type||'idea')===k);
-    return `<div class="col col-${k}"><h3>${l}<span>${items.length}</span></h3>${items.length?items.map(([id,i])=>{const st=i.status||'new';return `<article class="card ist-${st}" data-edit="ideas:${id}" tabindex="0">
-      <div class="card-t">${esc(i.text)}</div>
+    return `<div class="col col-${k}" data-type="${k}"><h3>${l}<span>${items.length}</span></h3>${items.length?items.map(([id,i])=>{const st=i.status||'new';return `<article class="card ist-${st}" data-edit="ideas:${id}" data-id="${id}" tabindex="0">
+      <div class="card-top"><div class="card-t">${esc(i.text)}</div><span class="grip" data-grip title="Перетягни, щоб змінити порядок" aria-hidden="true">⋮⋮</span></div>
       ${i.approach||i.rk?`<div class="card-m">${i.approach?`<span class="appr">${esc(i.approach)}</span>`:''}${i.rk?`<span class="card-rk">${esc(rkLabel(i.rk))}</span>`:''}</div>`:''}
       ${i.note?`<div class="card-n">${esc(i.note)}</div>`:''}
       <button class="ipill ist-${st}" data-icycle="${id}" title="Натисни, щоб змінити статус">${ISTAT[st]}</button></article>`}).join(''):`<div class="col-empty">Порожньо</div>`}</div>`;
@@ -536,6 +573,7 @@ function deleteOpen(btn){
 }
 
 document.addEventListener('click',e=>{
+  if(e.target.closest('[data-grip]'))return;
   const t=e.target.closest('button,a,tr[data-rk],article[data-edit],input[type=checkbox]');if(!t)return;
   if(t.matches('a[data-stop]'))return;
   const ds=t.dataset;
@@ -577,7 +615,7 @@ $('#drawer').addEventListener('change',e=>{
 document.addEventListener('submit',e=>{
   if(e.target.id!=='ideaForm')return;e.preventDefault();
   const t=$('#ideaText').value.trim();if(!t){$('#ideaText').focus();return}
-  put('ideas',uid(),{text:t,type:$('#ideaType').value,status:'new',approach:$('#ideaAppr').value.trim(),rk:$('#ideaRk').value,note:'',created:Date.now()});
+  put('ideas',uid(),{pos:Math.min(0,...[...S.ideas.values()].map(ipos))-1000,text:t,type:$('#ideaType').value,status:'new',approach:$('#ideaAppr').value.trim(),rk:$('#ideaRk').value,note:'',created:Date.now()});
   $('#ideaText').value='';$('#ideaText').focus();toast('Додано');
 });
 $('#drawer').addEventListener('submit',e=>{
