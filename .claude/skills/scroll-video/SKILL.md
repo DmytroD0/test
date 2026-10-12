@@ -14,7 +14,10 @@ python3 "<skill_dir>/scripts/scroll_video.py" text.txt photos/ out.mp4 [--ratio 
 
 ## Inputs
 - **text.txt** (UTF-8): paragraphs separated by an EMPTY line. Words in `**double stars**` become yellow.
-  If the user pastes the text in chat, write it to a `.txt` yourself. Keep their wording exactly; only add `**…**` where they asked for highlights.
+  The user may paste the text in chat or send a file (.txt, .docx…) — write it to a `.txt` yourself.
+  - Keep their wording exactly: never change, add or drop words or punctuation.
+  - No highlights by default: add `**…**` only where the user explicitly asked for yellow words. Remove any stray `**` they didn't mean as highlights.
+  - If the text has no paragraph breaks (one solid block), split it into paragraphs yourself at sentence ends, by meaning, about 2–3 sentences each. If it already has paragraphs, keep them as they are.
 - **photos folder**: .jpg/.jpeg/.png/.webp, shown in filename order (01.jpg, 02.jpg…), time split evenly. Rename files to set the order the user wants.
 - **music** (optional): `--music path`, or a `music.mp3` next to the text file. Looped if short, fades out over the last 2.5 s.
 
