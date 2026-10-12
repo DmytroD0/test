@@ -55,6 +55,22 @@ button{cursor:pointer}
 
 .layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:16px;align-items:start}
 .side{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);display:flex;flex-direction:column;gap:14px}
+.side-inner{display:flex;flex-direction:column;gap:14px}
+.cardfind{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px;display:flex;flex-direction:column;gap:8px}
+.cardfind h4{margin:0}
+.cardfind input{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--sunk);font-weight:600;letter-spacing:.04em}
+.cardfind input:focus{border-color:var(--accent);outline:none}
+.card-res{display:flex;flex-direction:column;gap:6px}
+.card-res:empty{display:none}
+.cr-item{display:flex;flex-direction:column;gap:3px;text-align:left;border:1px solid var(--line);background:var(--sunk);border-radius:6px;padding:7px 8px}
+.cr-item:hover{border-color:var(--accent)}
+.cr-top{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.cr-top .pill{padding:1px 8px 1px 6px;font-size:11px}
+.cr-path{font-size:12.5px;word-break:break-word}
+.cr-off{font-size:12px;color:var(--muted);word-break:break-all}
+.cr-free{font-size:13px;color:var(--ok);background:var(--ok-soft);border-radius:6px;padding:7px 8px}
+.cr-warn{font-size:12.5px;color:var(--warn);background:var(--warn-soft);border-radius:6px;padding:5px 8px;font-weight:600}
+.cr-hint{font-size:12.5px;color:var(--muted)}
 .side h4{margin:0 0 6px;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:600}
 .socnav{display:flex;flex-direction:column;gap:2px}
 .socnav button{display:flex;justify-content:space-between;gap:8px;align-items:center;text-align:left;border:0;background:none;padding:7px 10px;border-radius:6px}
@@ -245,7 +261,12 @@ table.setup select:focus,table.setup input:focus{border-color:var(--accent);back
   <div id="mode" class="mode" hidden></div>
   <section id="stats" class="stats" aria-label="Підсумок"></section>
   <div class="layout">
-    <aside id="side" class="side"></aside>
+    <aside class="side">
+      <div class="cardfind"><h4><label for="cardQ">Пошук карти</label></h4>
+        <input id="cardQ" type="search" inputmode="numeric" autocomplete="off" maxlength="8" placeholder="Ост. 4 цифри, напр. 2053">
+        <div id="cardRes" class="card-res" aria-live="polite"></div></div>
+      <div id="side" class="side-inner"></div>
+    </aside>
     <main id="main" class="main"><div class="empty"><strong>Завантажую аккаунти…</strong></div></main>
   </div>
 </div>
@@ -315,10 +336,25 @@ function render(){
     [`${allRks.filter(r=>r.status==='active').length}<small> / ${allRks.length}</small>`,'РК працюють'],
     [open,'Відкриті задачі']].map(([n,l])=>`<div class="stat"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
   renderSide();
+  renderCardRes();
   if(!ready){return}
   ui.view==='acc'?renderAcc():ui.view==='setup'?renderSetup():ui.view==='ideas'?renderIdeas():renderTasks();
   if(ui.open&&!$('#drawer').hidden)refreshDrawerTasks();
 }
+
+function renderCardRes(){
+  const box=$('#cardRes');if(!box)return;
+  const q=($('#cardQ').value||'').replace(/\D/g,'');
+  if(!q){box.innerHTML='';return}
+  const hits=[...S.rks].filter(([,r])=>String(r.accId||'').replace(/\D/g,'').includes(q));
+  if(!hits.length){box.innerHTML=q.length>=4?`<div class="cr-free"><b>•• ${esc(q)}</b> нікуди не прив'язана</div>`:`<div class="cr-hint">Немає збігів</div>`;return}
+  box.innerHTML=(hits.length>1?`<div class="cr-warn">Знайдено в ${hits.length} РК</div>`:'')+hits.map(([rid,r])=>{
+    const b=S.bms.get(r.bm),so=b&&S.socs.get(b.soc),st=r.status||'prep';
+    return `<button class="cr-item" data-rk="${rid}"><span class="cr-top"><b>•• ${esc(r.accId)}</b><span class="pill st-${st}"><span class="dot"></span>${STATUS[st]}</span></span>
+      <span class="cr-path">${esc(so?so.name:'Без основи')} › ${esc(b?b.name:'—')} › <b>${esc(r.code||'РК')}</b></span>${r.offer?`<span class="cr-off">${esc(r.offer)}</span>`:''}</button>`;
+  }).join('');
+}
+$('#cardQ').addEventListener('input',renderCardRes);
 
 function renderSide(){
   const btn=(id,name,cnt,t)=>`<button data-soc="${id}" aria-pressed="${ui.soc===id}"><span>${esc(name)}</span><span class="cnt${t?' t':''}">${cnt}</span></button>`;
