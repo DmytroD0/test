@@ -46,7 +46,8 @@ button{cursor:pointer}
 .btn.danger{color:var(--danger)}
 .btn.danger.armed{background:var(--danger);border-color:var(--danger);color:#fff}
 
-.mode{font-size:13px;color:var(--warn);background:var(--warn-soft);border-radius:var(--r);padding:8px 12px}
+.mode{font-size:14px;font-weight:600;color:var(--danger);background:color-mix(in srgb,var(--danger) 13%,var(--surface));border:1px solid var(--danger);border-radius:var(--r);padding:10px 14px}
+body.ro [data-addbm],body.ro [data-addrk],body.ro #addSoc,body.ro [data-act="addSoc"],body.ro #ideaForm,body.ro .add-task,body.ro [data-act="delete"]{display:none!important}
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 .stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px 14px}
 .stat .n{font-weight:600;font-size:22px;line-height:1.1;font-variant-numeric:tabular-nums}
@@ -299,6 +300,7 @@ const isNote=t=>t.kind==='note';
 const openTasks=r=>(r.tasks||[]).filter(t=>!t.done&&!isNote(t));
 const notesOf=r=>(r.tasks||[]).filter(isNote);
 
+function showMode(msg){const m=$('#mode');m.textContent=msg;m.hidden=false}
 function toast(msg){const t=$('#toast');t.textContent=msg;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,2600)}
 
 /* ---------- persistence ---------- */
@@ -308,7 +310,7 @@ function persist(col,id,data){
   if(!db)return;
   const key=col+'/'+id;
   queues[key]=(queues[key]||Promise.resolve()).then(()=>data?db.collection(col).doc(id).set(data):db.collection(col).doc(id).delete())
-    .catch(e=>toast('Не збереглося: '+(e&&(e.message||e.code)||'помилка')+'. Спробуй ще раз.'));
+    .catch(e=>{toast('Не збереглося');showMode('Зміни НЕ зберігаються в базу ('+(e&&(e.code||e.message)||'помилка')+'). Схоже, у тебе немає права редагувати цей трекер: попроси власника додати тебе через Share за email з правом редагування. Після оновлення сторінки незбережене зникне.')});
 }
 function put(col,id,data){S[col].set(id,data);persist(col,id,data);render()}
 function patch(col,id,fields){const cur=S[col].get(id);if(!cur)return;put(col,id,{...cur,...fields})}
@@ -674,9 +676,11 @@ render();
   try{db=window.claude&&window.claude.use?await window.claude.use('db'):null}catch(e){db=null}
   if(!db){
     local=true;loadLocal();ready=true;
-    const m=$('#mode');m.hidden=false;m.textContent='Спільна база недоступна (ти не увійшов у claude.ai?). Зміни зберігаються лише в цьому браузері.';
+    showMode('Ти не увійшов у claude.ai або спільна база недоступна. Те, що введеш зараз, збережеться тільки в цьому браузері і може зникнути. Увійди в claude.ai і онови сторінку.');
     render();return;
   }
+  try{const u=await window.claude.use('user');if(u){const can=await u.can('data.write');
+    if(can===false){document.body.classList.add('ro');showMode('У тебе доступ тільки на перегляд, тож зміни тут не збережуться. Попроси власника додати тебе через Share за email з правом редагування.')}}}catch(e){}
   const got=new Set();
   for(const c of COLS){
     db.collection(c).onSnapshot(snap=>{
