@@ -1,0 +1,153 @@
+
+
+El veterinario miró a Duque y me dijo: "Mariana, lo más humano en este momento sería dejarlo ir." Veintiún días después, ese mismo perro trotaba por el jardín como si tuviera tres años.
+
+Mi nombre es Mariana Solís Estrada. Tengo 45 años, vivo en La Reina, Santiago, y soy criadora certificada de Golden Retrievers desde los treinta. No vengo de plata — mi papá fue mecánico en San Miguel y mi mamá cocinaba en una picada del barrio. Lo que tengo lo construí con mis manos y con mis perros. He llevado ejemplares a exposiciones en todo el país: Santiago, Viña del Mar, Concepción, La Serena, Temuco. He ganado suficientes escarapelas azules como para tapizar una pared.
+
+Duque es el que empezó todo eso.
+
+Lo tuve desde cachorro — ocho semanas, color miel oscura, con esas orejas suavecitas que tienen los Golden cuando son chiquititos. Lo traje de un criadero en Rancagua. Desde el principio se notó que era especial: la estructura, el andar, la cabeza ancha. El tipo de perro que entra a un ring y la gente se da vuelta a mirarlo sin que tú digas nada. Ganó su primer Best in Show a los dos años, fue campeón nacional a los cuatro.
+
+Pero para mí nunca fue solo un perro de exhibición. Duque dormía en mi pieza. Me acompañó cuando me separé de mi exmarido. Siempre en el asiento del copiloto con la cabeza afuera de la ventana como si fuera el dueño del mundo.
+
+A los nueve años, el cuerpo empezó a pasarle la cuenta. Primero se demoraba en levantarse. Luego las escaleras, luego el jardín. Compré una rampita para que no tuviera que saltar — dos semanas y también eso le costaba. Al cuarto mes ya se negaba a subir escaleras. Al quinto, algunos días no quería ni salir al jardín.
+
+Las radiografías mostraron displasia de cadera bilateral, mayor deterioro del lado derecho. La cirugía costaba entre 3 y 5 millones de pesos — y con su edad, los riesgos de la anestesia eran altos. Seguimos tres meses con antiinflamatorios: mejoraba un poco, luego volvía a empeorar. Hasta que en febrero el veterinario me dijo lo que ya conté al principio.
+
+Le pagué la consulta, tomé a Duque con todo y su dolor, y me fui al auto llorando sin parar.
+
+
+Tres días después me llamó Rodrigo Ampudia, criador de Labradores de Talca con quien llevo años en el circuito de exposiciones. Le conté lo de Duque. Él escuchó, y cuando terminé me dijo:
+
+"Mariana, antes de tomar esa decisión, quiero contarte algo. Un compadre mío tiene caballos de rodeo aquí en Talca. A uno le diagnosticaron artritis severa — el veterinario dijo que ya no iba a correr más. Le aplicaron un gel que le mandó una doctora de Rancagua. En seis semanas el caballo estaba trotando. Ahora está compitiendo de nuevo."
+
+"Rodrigo, un caballo no es lo mismo que un perro."
+
+"No — pero el cartílago sí funciona igual en todos los mamíferos. Por lo menos habla con la doctora."
+
+Me dio el número. Me demoré dos días en llamar — tenía miedo de ilusionarme con algo que no funcionara. Cuando por fin llamé, contestó una voz tranquila, directa. Dra. Patricia Mendoza Rivera, del Laboratorio FlexiGo en Rancagua.
+
+No me prometió nada. Eso fue lo primero que me llamó la atención.
+
+Le describí el caso completo — la displasia bilateral, el deterioro, la edad, los meses de antiinflamatorios. Ella escuchó todo, me hizo tres preguntas técnicas sobre las radiografías y me dijo:
+
+"No le voy a decir que FlexiGo hace milagros. Lo que sí le puedo decir es que no es un gel cualquiera: es un lubricante articular que penetra hasta donde las pastillas no llegan, y estimula la regeneración del cartílago desde adentro. En displasia canina hemos visto resultados muy positivos — pero depende del nivel de deterioro. Si el cartílago tiene algo con qué trabajar, el gel lo hace. Aplíquelo dos veces al día, mañana y noche, masaje circular, cinco minutos en cada cadera. Me reporta en una semana."
+
+El tubo llegó dos días después.
+
+
+**Día 3**
+Duque dejaba que le tocara la cadera sin gruñir. Antes reclamaba si yo ponía la mano ahí. "Es muy pronto," me dije. Seguí aplicando, mañana y noche, religiosamente. Me arrodillaba junto a él en el suelo y masajeaba en círculos mientras le hablaba bajito como llevo años haciéndolo.
+
+**Día 7**
+Me desperté y escuché un ruido antes del despertador. Duque estaba parado junto a la cama, moviendo la cola. No había saltado — pero se había levantado solo por primera vez en semanas. Me agaché y lo abracé en el suelo. Él me lamió la cara como cuando era cachorro.
+
+Lloré. Obvio que lloré.
+
+Llamé a la Dra. Mendoza y le conté. Me dijo: "Eso es exactamente lo que queremos ver. Sigan con el protocolo — la mejora temprana es señal de que el tejido está respondiendo. No bajen la guardia."
+
+**Día 14**
+Duque bajó los cuatro escalones de la entrada al estacionamiento. Despacio, con cuidado, pero los bajó. Llegó abajo, me miró, y soltó ese murmullo desde el pecho que hacen los Golden cuando están contentos — ese sonido que yo llevaba meses sin escuchar.
+
+Lo saqué al jardín. Caminó por el pasto. Levantó la nariz para oler el aire. Fue la primera vez en meses que lo vi caminar sin cojear de manera visible.
+
+**Día 21**
+Duque trotó hasta la puerta cuando escuchó el timbre. No al galope de los cinco años — pero trotó. Con las cuatro patas. Derecho.
+
+La vecina que entró pegó un grito: "¡Pero si este perro estaba súper mal!"
+
+Sí po. Estaba súper mal. Y ahora está aquí.
+
+
+Lo que voy a contar ahora lo hago porque sé que no soy la única.
+
+Mientras trataba a Duque, yo seguía de pie horas en exposiciones — quince años parada en pistas de tierra, pisos de cemento, cargando perros, agachándome para revisar dentaduras, levantando jaulas del auto. Mis rodillas llevaban meses reclamando. Lo ignoré como ignoro muchas cosas: con trabajo y café.
+
+La noche del día catorce del tratamiento de Duque, mientras me arrodillaba para hacerle el masaje, se me escapó un quejido cuando me levanté. El dolor en la rodilla derecha fue tan fuerte que tuve que apoyarme en la pared. Duque me miró como si entendiera. Ahí fue cuando me di cuenta de lo mal que yo estaba.
+
+El traumatólogo lo confirmó: condromalacia rotuliana bilateral con mayor deterioro en la rodilla derecha, más inicio de artritis. "Si no responde a kinesiología, hay que pensar en cirugía. Estamos hablando de reemplazo total de rodilla derecha — el procedimiento anda por los 10 millones de pesos, sin contar la izquierda."
+
+Salí con la receta en la mano y pensé: tengo el tubo de FlexiGo en la casa. Duque ya camina. ¿Por qué no lo intento yo también?
+
+Le escribí a la Dra. Mendoza. Me explicó: "El principio activo trabaja el cartílago articular — no distingue si es una cadera canina o una rodilla humana. Misma técnica, más presión porque la piel humana es más gruesa." Dos veces al día, mismo protocolo.
+
+
+**Día 3 — yo**
+Calor en la rodilla durante el masaje de la noche. No dolor — calor, como si algo se estuviera activando adentro. Al día siguiente la rodilla no crujió cuando bajé la escalera. Cruje siempre. Esa mañana no crujió.
+
+**Día 7 — yo**
+Fui a la exposición en Viña del Mar. Tres horas de pie sin el ibuprofeno que normalmente ando trayendo en la cartera. A la segunda hora me acordé de que no lo había tomado — y me di cuenta de que no lo había necesitado.
+
+**Día 14 — yo**
+Agachada revisando la dentadura de una cachorra, me paré de golpe porque la dueña me preguntó algo. Me paré rápido de cuclillas y no dolió. Llevaba meses en que eso me hacía soltar un ruido horrible.
+
+**Día 25 — yo**
+Volví al traumatólogo. Me revisó y me dijo: "¿Qué está haciendo distinto?" Le conté del gel. Tomó nota. "El tejido cartilaginoso muestra menos inflamación y la movilidad mejoró de manera visible. Por ahora no hay indicación de cirugía."
+
+Cirugía cancelada.
+
+
+Cuando le conté a la Dra. Mendoza, me dijo algo que me quedó grabado:
+
+"FlexiGo trabaja en cualquier articulación donde haya cartílago comprometido — rodillas, caderas, tobillos, muñecas, hombros, columna, lo que sea. El cartílago funciona igual en todos los mamíferos. Es el mismo principio en un Golden Retriever de nueve años, en una persona de cuarenta y cinco o en un caballo de rodeo."
+
+
+Desde que empecé a contar esto, llegaron testimonios que no me esperaba:
+
+**Carmen R., 52 años, Talca, Región del Maule — dueña de casa:**
+"Artritis en las manos desde hace cuatro años. Ya no podía sostener las tijeras de podar sin que se me durmieran los dedos. En tres semanas ya corté mis rosas sin problema. Pensé que nunca iba a volver a poder hacer eso."
+
+**Jorge M., 48 años, Puente Alto, Santiago — camionero:**
+"Veintitrés años manejando, la cadera izquierda hecha pedazos. El médico decía que tarde o temprano necesitaba cirugía. Con el gel, en treinta días ya no siento el tirón al bajarme de la cabina. Sigo trabajando."
+
+**Silvia T., 39 años, Curicó, Región del Maule — profesora de básica:**
+"La rodilla derecha lleva años reclamando. Probé FlexiGo más por curiosidad que por fe. En dos semanas ya subía las escaleras del colegio sin agarrarme de la baranda."
+
+
+El tubo de FlexiGo está en **$38.990** ahora. Compáralo con 10 millones de una cirugía y el número cambia completamente de perspectiva.
+
+La Dra. Mendoza me explicó que el siguiente lote sube a **$58.990** por el aumento de los ingredientes activos con proveedores internacionales. Al momento de escribir esto, **quedan 34 tubos disponibles**. Cuando se acaben, el precio sube y hay que esperar el siguiente pedido.
+
+Pago contra entrega. Despacho gratis a todo Chile.
+
+
+**¿Cómo pides tu FlexiGo?**
+
+1. Llenas el formulario al final de esta página
+2. Te llaman en 5 a 10 minutos para confirmar tu pedido y dirección
+3. Eliges cuántos tubos — mucha gente pide dos para hacer el tratamiento completo sin quedar a la mitad
+4. Tu paquete sale ese mismo día o al siguiente con despacho express
+5. Pagas cuando el repartidor te lo entrega en tu casa — sin datos de tarjeta, sin adelantos
+
+**14 días:** si no ves ningún cambio, te devuelven toda la plata.
+**30 días:** si después del tratamiento completo no estás conforme, también hay devolución. Sin letra chica.
+
+
+No sé si tienes un perro que está sufriendo o si tú mismo llevas años aguantando una rodilla o una cadera que te hace la vida difícil. Lo que sí sé es que yo estaba a punto de despedirme de Duque — el perro que me dio quince años de compañía, de triunfos, de noches en que no quería estar sola.
+
+Hoy Duque está aquí. Yo también, caminando sin dolor.
+
+Eso vale más que cualquier cosa que yo pudiera escribir.
+
+
+**P.D. de la Dra. Patricia Mendoza Rivera:**
+
+"Cada semana sin tratamiento, el cartílago sigue desgastándose. No descansa, no espera. El daño que hoy se puede trabajar con el gel, en tres meses puede estar fuera del alcance de cualquier tratamiento conservador. Si están pensando en intentarlo, que sea ahora. Quedan 34 tubos de este lote. El siguiente precio ya es de $58.990."
+
+
+**P.P.D.:**
+
+Son las 10 de la noche mientras termino de escribir esto. Duque está a mis pies, con el hocico apoyado en mi tobillo, respirando profundo. Hace dos meses yo pensaba que nunca iba a volver a sentir esto.
+
+Si tienes un perro que está sufriendo, por favor no te rindas todavía.
+
+
+## [FORMULARIO — PIDE TU FLEXIGO AQUÍ]
+
+**Nombre completo:**
+**Teléfono:**
+**Ciudad y región:**
+**¿Para quién es el tratamiento? (persona / mascota / ambos):**
+**¿Cuántos tubos necesitas?:**
+
+*Pago contra entrega · Despacho gratis · Garantía 14 días*
