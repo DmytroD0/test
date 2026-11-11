@@ -1,0 +1,24 @@
+{
+  "name": "timezone-widget",
+  "productName": "Часові пояси",
+  "version": "1.0.0",
+  "description": "Віджет годинника з часовими поясами для робочого столу",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist:win": "electron-builder --win portable",
+    "dist:mac": "electron-builder --mac dmg",
+    "dist:linux": "electron-builder --linux AppImage"
+  },
+  "build": {
+    "appId": "local.timezone.widget",
+    "productName": "TimezoneWidget",
+    "files": ["main.js", "preload.js", "index.html"],
+    "win": { "target": "portable", "signAndEditExecutable": false },
+    "mac": { "target": "dmg", "category": "public.app-category.utilities" }
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  }
+}

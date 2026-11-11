@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Часові пояси</title>
+<style>
+  :root {
+    --bg: rgba(22, 24, 30, 0.86);
+    --line: rgba(255, 255, 255, 0.08);
+    --text: #f2f3f5;
+    --muted: #9aa0ab;
+    --accent: #7cc4ff;
+    --danger: #ff6b6b;
+    --hover: rgba(255, 255, 255, 0.06);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: transparent; overflow: hidden; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--text);
+    user-select: none;
+    padding: 8px;
+  }
+  body.browser { background: #3b4252; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding-top: 40px; }
+  #card {
+    width: 304px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    backdrop-filter: blur(14px);
+    overflow: hidden;
+  }
+  header {
+    display: flex; align-items: center; gap: 4px;
+    padding: 8px 8px 8px 14px;
+    -webkit-app-region: drag;
+    border-bottom: 1px solid var(--line);
+  }
+  header h1 { font-size: 13px; font-weight: 600; margin: 0; flex: 1; color: var(--muted); letter-spacing: .02em; }
+  .icon-btn {
+    -webkit-app-region: no-drag;
+    width: 26px; height: 26px; border: 0; border-radius: 8px;
+    background: transparent; color: var(--muted);
+    font-size: 16px; line-height: 1; cursor: pointer;
+    display: grid; place-items: center;
+  }
+  .icon-btn:hover { background: var(--hover); color: var(--text); }
+  .icon-btn.active { color: var(--accent); }
+  .icon-btn:disabled { opacity: .3; cursor: default; }
+
+  #list { list-style: none; margin: 0; padding: 4px 0; }
+  .zone {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px 8px 14px; position: relative;
+  }
+  .zone:hover { background: var(--hover); }
+  .zone + .zone { border-top: 1px solid var(--line); }
+  .zone.local .name::after { content: " •"; color: var(--accent); }
+  .phase { font-size: 15px; width: 18px; text-align: center; flex: none; }
+  .info { flex: 1; min-width: 0; }
+  .name { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .name[contenteditable="true"] { outline: 1px solid var(--accent); border-radius: 4px; padding: 0 3px; user-select: text; text-overflow: clip; }
+  .sub { font-size: 11.5px; color: var(--muted); margin-top: 2px; white-space: nowrap; }
+  .time { font-size: 24px; font-weight: 300; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+  .time small { font-size: 12px; color: var(--muted); margin-left: 2px; }
+  .zone .del, .zone .move {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    opacity: 0; transition: opacity .12s;
+  }
+  .zone .del { right: 4px; }
+  .zone .del:hover { color: var(--danger); }
+  .zone:hover .del, .zone:hover .move { opacity: 1; }
+  .zone:hover .time { visibility: hidden; }
+  .zone .move { right: 32px; display: flex; gap: 0; }
+  .zone .move .icon-btn { width: 22px; font-size: 12px; }
+  .zone.dragging { opacity: .4; }
+
+  .panel { border-top: 1px solid var(--line); padding: 10px 12px; }
+  .panel[hidden] { display: none; }
+  #search {
+    width: 100%; padding: 8px 10px; border-radius: 9px;
+    border: 1px solid var(--line); background: rgba(0,0,0,.25);
+    color: var(--text); font: inherit; font-size: 13px; outline: none;
+    user-select: text;
+  }
+  #search:focus { border-color: var(--accent); }
+  #results { list-style: none; margin: 6px 0 0; padding: 0; max-height: 220px; overflow-y: auto; }
+  #results li {
+    display: flex; justify-content: space-between; gap: 8px;
+    padding: 6px 8px; border-radius: 7px; font-size: 13px; cursor: pointer;
+  }
+  #results li span:last-child { color: var(--muted); font-size: 11.5px; white-space: nowrap; }
+  #results li:hover, #results li.sel { background: rgba(124,196,255,.15); }
+  #results li.empty { color: var(--muted); cursor: default; }
+  #results li.empty:hover { background: none; }
+  .hint { font-size: 11px; color: var(--muted); margin-top: 6px; }
+  #results::-webkit-scrollbar { width: 6px; }
+  #results::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 3px; }
+
+  .row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; padding: 5px 0; }
+  .switch { position: relative; width: 34px; height: 20px; flex: none; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .switch span { position: absolute; inset: 0; background: rgba(255,255,255,.15); border-radius: 10px; cursor: pointer; transition: .15s; }
+  .switch span::before { content: ""; position: absolute; width: 14px; height: 14px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .15s; }
+  .switch input:checked + span { background: var(--accent); }
+  .switch input:checked + span::before { transform: translateX(14px); }
+  .electron-only[hidden] { display: none; }
+  .link-btn { background: none; border: 0; color: var(--muted); font: inherit; font-size: 12px; cursor: pointer; padding: 4px 0; }
+  .link-btn:hover { color: var(--danger); }
+</style>
+</head>
+<body>
+<div id="card">
+  <header>
+    <h1>Часові пояси</h1>
+    <button class="icon-btn" id="addBtn" title="Додати часовий пояс">＋</button>
+    <button class="icon-btn" id="setBtn" title="Налаштування">⚙</button>
+    <button class="icon-btn electron-only" id="closeBtn" title="Закрити віджет" hidden>✕</button>
+  </header>
+
+  <ul id="list"></ul>
+
+  <div class="panel" id="addPanel" hidden>
+    <input id="search" placeholder="Місто або пояс (напр. Варшава, Tokyo)…" autocomplete="off" spellcheck="false">
+    <ul id="results"></ul>
+    <div class="hint" id="limitHint"></div>
+  </div>
+
+  <div class="panel" id="setPanel" hidden>
+    <label class="row">24-годинний формат <span class="switch"><input type="checkbox" id="opt24"><span></span></span></label>
+    <label class="row">Показувати секунди <span class="switch"><input type="checkbox" id="optSec"><span></span></span></label>
+    <label class="row electron-only" hidden>Поверх усіх вікон <span class="switch"><input type="checkbox" id="optTop"><span></span></span></label>
+    <label class="row electron-only" hidden>Запускати з системою <span class="switch"><input type="checkbox" id="optAuto"><span></span></span></label>
+    <div class="hint">Подвійний клік по назві — перейменувати.<br>Наведіть на рядок, щоб видалити або перемістити.</div>
+    <button class="link-btn" id="resetBtn">Скинути список до стандартного</button>
+  </div>
+</div>
+
+<script>
+const MAX = 10;
+const STORE_KEY = 'tz-widget-v1';
+const isElectron = !!window.widget;
+if (!isElectron) document.body.classList.add('browser');
+
+// Популярні міста з українськими назвами (пошук також працює по всіх поясах IANA)
+const CITIES = [
+  ['Київ','Europe/Kyiv'],['Львів','Europe/Kyiv'],['Варшава','Europe/Warsaw'],['Берлін','Europe/Berlin'],
+  ['Лондон','Europe/London'],['Париж','Europe/Paris'],['Мадрид','Europe/Madrid'],['Рим','Europe/Rome'],
+  ['Амстердам','Europe/Amsterdam'],['Прага','Europe/Prague'],['Відень','Europe/Vienna'],['Цюрих','Europe/Zurich'],
+  ['Лісабон','Europe/Lisbon'],['Дублін','Europe/Dublin'],['Стокгольм','Europe/Stockholm'],['Осло','Europe/Oslo'],
+  ['Гельсінкі','Europe/Helsinki'],['Таллінн','Europe/Tallinn'],['Рига','Europe/Riga'],['Вільнюс','Europe/Vilnius'],
+  ['Кишинів','Europe/Chisinau'],['Бухарест','Europe/Bucharest'],['Софія','Europe/Sofia'],['Афіни','Europe/Athens'],
+  ['Стамбул','Europe/Istanbul'],['Будапешт','Europe/Budapest'],['Братислава','Europe/Bratislava'],
+  ['Тбілісі','Asia/Tbilisi'],['Єреван','Asia/Yerevan'],['Баку','Asia/Baku'],['Тель-Авів','Asia/Jerusalem'],
+  ['Дубай','Asia/Dubai'],['Ер-Ріяд','Asia/Riyadh'],['Каїр','Africa/Cairo'],['Йоганнесбург','Africa/Johannesburg'],
+  ['Лагос','Africa/Lagos'],['Найробі','Africa/Nairobi'],['Касабланка','Africa/Casablanca'],
+  ['Ташкент','Asia/Tashkent'],['Алмати','Asia/Almaty'],['Делі','Asia/Kolkata'],['Мумбаї','Asia/Kolkata'],
+  ['Катманду','Asia/Kathmandu'],['Бангкок','Asia/Bangkok'],['Джакарта','Asia/Jakarta'],['Сінгапур','Asia/Singapore'],
+  ['Гонконг','Asia/Hong_Kong'],['Пекін','Asia/Shanghai'],['Шанхай','Asia/Shanghai'],['Тайбей','Asia/Taipei'],
+  ['Сеул','Asia/Seoul'],['Токіо','Asia/Tokyo'],['Маніла','Asia/Manila'],['Сідней','Australia/Sydney'],
+  ['Мельбурн','Australia/Melbourne'],['Перт','Australia/Perth'],['Окленд','Pacific/Auckland'],
+  ['Гонолулу','Pacific/Honolulu'],['Анкоридж','America/Anchorage'],['Лос-Анджелес','America/Los_Angeles'],
+  ['Сан-Франциско','America/Los_Angeles'],['Сіетл','America/Los_Angeles'],['Ванкувер','America/Vancouver'],
+  ['Денвер','America/Denver'],['Фінікс','America/Phoenix'],['Чикаго','America/Chicago'],['Даллас','America/Chicago'],
+  ['Мехіко','America/Mexico_City'],['Нью-Йорк','America/New_York'],['Маямі','America/New_York'],
+  ['Торонто','America/Toronto'],['Монреаль','America/Toronto'],['Богота','America/Bogota'],['Ліма','America/Lima'],
+  ['Сантьяго','America/Santiago'],['Буенос-Айрес','America/Argentina/Buenos_Aires'],['Сан-Паулу','America/Sao_Paulo'],
+  ['UTC','UTC'],
+];
+let ALL_TZ = [];
+try { ALL_TZ = Intl.supportedValuesOf('timeZone'); } catch {}
+if (!ALL_TZ.includes('UTC')) ALL_TZ.push('UTC');
+
+const DEFAULTS = [
+  { tz: 'Europe/Kyiv', label: 'Київ' },
+  { tz: 'Europe/London', label: 'Лондон' },
+  { tz: 'America/New_York', label: 'Нью-Йорк' },
+  { tz: 'America/Los_Angeles', label: 'Лос-Анджелес' },
+  { tz: 'Asia/Tokyo', label: 'Токіо' },
+];
+
+function load() {
+  try {
+    const s = JSON.parse(localStorage.getItem(STORE_KEY));
+    if (s && Array.isArray(s.zones) && s.zones.length) return { h24: true, sec: false, ...s };
+  } catch {}
+  return { zones: DEFAULTS.map(z => ({ ...z })), h24: true, sec: false };
+}
+const state = load();
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch {} }
+
+const LOCAL_TZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+// Зсув пояса від UTC у хвилинах на момент date
+function offsetMin(tz, date) {
+  const p = {};
+  for (const { type, value } of new Intl.DateTimeFormat('en-US', {
+    timeZone: tz, hourCycle: 'h23', year: 'numeric', month: 'numeric', day: 'numeric',
+    hour: 'numeric', minute: 'numeric', second: 'numeric',
+  }).formatToParts(date)) p[type] = value;
+  const asUTC = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour % 24, +p.minute, +p.second);
+  return Math.round((asUTC - Math.floor(date.getTime() / 1000) * 1000) / 60000);
+}
+function fmtDiff(min) {
+  if (min === 0) return 'як у вас';
+  const sign = min > 0 ? '+' : '−';
+  const a = Math.abs(min), h = Math.floor(a / 60), m = a % 60;
+  return `${sign}${h}${m ? ':' + String(m).padStart(2, '0') : ''} год`;
+}
+function fmtUTC(min) {
+  const sign = min >= 0 ? '+' : '−';
+  const a = Math.abs(min), h = Math.floor(a / 60), m = a % 60;
+  return `UTC${sign}${h}${m ? ':' + String(m).padStart(2, '0') : ''}`;
+}
+function dayKey(tz, date) {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).format(date);
+}
+function prettyTz(tz) { return tz.split('/').pop().replace(/_/g, ' '); }
+
+const fmtCache = new Map();
+function fmt(tz, opts) {
+  const k = tz + JSON.stringify(opts);
+  if (!fmtCache.has(k)) fmtCache.set(k, new Intl.DateTimeFormat('uk-UA', { timeZone: tz, ...opts }));
+  return fmtCache.get(k);
+}
+
+// ---------- Рендер списку ----------
+const list = document.getElementById('list');
+
+function render() {
+  list.innerHTML = '';
+  state.zones.forEach((z, i) => {
+    const li = document.createElement('li');
+    li.className = 'zone' + (z.tz === LOCAL_TZ ? ' local' : '');
+    li.dataset.i = i;
+    li.title = z.tz + (z.tz === LOCAL_TZ ? ' (ваш пояс)' : '');
+    li.innerHTML = `
+      <div class="phase"></div>
+      <div class="info"><div class="name"></div><div class="sub"></div></div>
+      <div class="time"></div>
+      <div class="move">
+        <button class="icon-btn up" title="Вгору">▲</button>
+        <button class="icon-btn down" title="Вниз">▼</button>
+      </div>
+      <button class="icon-btn del" title="Видалити">✕</button>`;
+    li.querySelector('.name').textContent = z.label;
+    li.querySelector('.up').disabled = i === 0;
+    li.querySelector('.down').disabled = i === state.zones.length - 1;
+    list.appendChild(li);
+  });
+  updateLimit();
+  tick();
+}
+
+function tick() {
+  const now = new Date();
+  const localOff = offsetMin(LOCAL_TZ, now);
+  const localDay = dayKey(LOCAL_TZ, now);
+  list.querySelectorAll('.zone').forEach(li => {
+    const z = state.zones[+li.dataset.i];
+    if (!z) return;
+    const off = offsetMin(z.tz, now);
+    const timeOpts = { hour: '2-digit', minute: '2-digit', hourCycle: state.h24 ? 'h23' : 'h12' };
+    if (state.sec) timeOpts.second = '2-digit';
+    let t = fmt(z.tz, timeOpts).formatToParts(now);
+    const main = t.filter(p => p.type !== 'dayPeriod').map(p => p.value).join('').trim();
+    const period = t.find(p => p.type === 'dayPeriod')?.value || '';
+    const timeEl = li.querySelector('.time');
+    timeEl.textContent = main;
+    if (period) { const s = document.createElement('small'); s.textContent = period; timeEl.appendChild(s); }
+
+    const day = dayKey(z.tz, now);
+    let rel = '';
+    if (day > localDay) rel = 'завтра';
+    else if (day < localDay) rel = 'вчора';
+    const date = fmt(z.tz, { weekday: 'short', day: 'numeric', month: 'short' }).format(now);
+    const parts = [rel || date, z.tz === LOCAL_TZ ? fmtUTC(off) : fmtDiff(off - localOff)];
+    li.querySelector('.sub').textContent = parts.join(' · ');
+
+    const h = +fmt(z.tz, { hour: 'numeric', hourCycle: 'h23' }).format(now);
+    li.querySelector('.phase').textContent = h >= 7 && h < 19 ? '☀️' : (h >= 19 && h < 22) || (h >= 5 && h < 7) ? '🌆' : '🌙';
+  });
+}
+
+list.addEventListener('click', e => {
+  const li = e.target.closest('.zone'); if (!li) return;
+  const i = +li.dataset.i;
+  if (e.target.closest('.del')) {
+    if (state.zones.length <= 1) return;
+    state.zones.splice(i, 1);
+  } else if (e.target.closest('.up') && i > 0) {
+    [state.zones[i - 1], state.zones[i]] = [state.zones[i], state.zones[i - 1]];
+  } else if (e.target.closest('.down') && i < state.zones.length - 1) {
+    [state.zones[i + 1], state.zones[i]] = [state.zones[i], state.zones[i + 1]];
+  } else return;
+  save(); render();
+});
+
+// Перейменування подвійним кліком
+list.addEventListener('dblclick', e => {
+  const name = e.target.closest('.name'); if (!name) return;
+  const i = +name.closest('.zone').dataset.i;
+  name.contentEditable = 'true'; name.focus();
+  document.getSelection().selectAllChildren(name);
+  const finish = (ok) => {
+    name.contentEditable = 'false';
+    const v = name.textContent.trim();
+    if (ok && v) { state.zones[i].label = v.slice(0, 40); save(); }
+    render();
+  };
+  name.onkeydown = ev => {
+    if (ev.key === 'Enter') { ev.preventDefault(); name.onblur = null; finish(true); }
+    if (ev.key === 'Escape') { name.onblur = null; finish(false); }
+  };
+  name.onblur = () => finish(true);
+});
+
+// ---------- Додавання ----------
+const addPanel = document.getElementById('addPanel');
+const setPanel = document.getElementById('setPanel');
+const search = document.getElementById('search');
+const results = document.getElementById('results');
+const limitHint = document.getElementById('limitHint');
+let found = [], sel = 0;
+
+function togglePanel(panel, btn, other, otherBtn) {
+  panel.hidden = !panel.hidden;
+  btn.classList.toggle('active', !panel.hidden);
+  other.hidden = true; otherBtn.classList.remove('active');
+}
+const addBtn = document.getElementById('addBtn');
+const setBtn = document.getElementById('setBtn');
+addBtn.onclick = () => {
+  togglePanel(addPanel, addBtn, setPanel, setBtn);
+  if (!addPanel.hidden) { search.value = ''; doSearch(); search.focus(); }
+};
+setBtn.onclick = () => togglePanel(setPanel, setBtn, addPanel, addBtn);
+
+function updateLimit() {
+  const full = state.zones.length >= MAX;
+  search.disabled = full;
+  limitHint.textContent = full
+    ? `Максимум ${MAX} поясів. Видаліть один, щоб додати новий.`
+    : `${state.zones.length} з ${MAX} · Enter — додати, Esc — закрити`;
+}
+
+function norm(s) { return s.toLowerCase().replace(/[_\s\-'’]/g, ''); }
+
+function doSearch() {
+  const q = norm(search.value);
+  const now = new Date();
+  const out = [], seen = new Set();
+  for (const [label, tz] of CITIES) {
+    if (!q || norm(label).includes(q) || norm(tz).includes(q)) {
+      out.push({ label, tz }); seen.add(label + tz);
+    }
+  }
+  if (q) for (const tz of ALL_TZ) {
+    const label = prettyTz(tz);
+    if (norm(tz).includes(q) && !CITIES.some(c => c[1] === tz && seen.has(c[0] + tz))) {
+      out.push({ label, tz });
+    }
+  }
+  found = out.slice(0, 50); sel = 0;
+  results.innerHTML = '';
+  if (!found.length) {
+    results.innerHTML = '<li class="empty">Нічого не знайдено</li>';
+    return;
+  }
+  found.forEach((r, i) => {
+    const li = document.createElement('li');
+    if (i === sel) li.className = 'sel';
+    const a = document.createElement('span'); a.textContent = r.label;
+    const b = document.createElement('span');
+    b.textContent = fmt(r.tz, { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(now) + ' · ' + fmtUTC(offsetMin(r.tz, now));
+    li.append(a, b);
+    li.onclick = () => add(r);
+    results.appendChild(li);
+  });
+}
+
+function add(r) {
+  if (state.zones.length >= MAX) return;
+  state.zones.push({ tz: r.tz, label: r.label });
+  save(); render();
+  search.value = ''; doSearch();
+  if (state.zones.length >= MAX) { addPanel.hidden = true; addBtn.classList.remove('active'); }
+  else search.focus();
+}
+
+search.addEventListener('input', doSearch);
+search.addEventListener('keydown', e => {
+  const items = results.querySelectorAll('li:not(.empty)');
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (!items.length) return;
+    items[sel]?.classList.remove('sel');
+    sel = (sel + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length;
+    items[sel].classList.add('sel');
+    items[sel].scrollIntoView({ block: 'nearest' });
+  } else if (e.key === 'Enter' && found[sel]) {
+    add(found[sel]);
+  } else if (e.key === 'Escape') {
+    addPanel.hidden = true; addBtn.classList.remove('active');
+  }
+});
+
+// ---------- Налаштування ----------
+const opt24 = document.getElementById('opt24');
+const optSec = document.getElementById('optSec');
+opt24.checked = state.h24; optSec.checked = state.sec;
+opt24.onchange = () => { state.h24 = opt24.checked; save(); tick(); };
+optSec.onchange = () => { state.sec = optSec.checked; save(); tick(); };
+document.getElementById('resetBtn').onclick = () => {
+  state.zones = DEFAULTS.map(z => ({ ...z })); save(); render();
+};
+
+if (isElectron) {
+  document.querySelectorAll('.electron-only').forEach(el => el.hidden = false);
+  const optTop = document.getElementById('optTop');
+  const optAuto = document.getElementById('optAuto');
+  window.widget.getSettings().then(s => { optTop.checked = s.alwaysOnTop; optAuto.checked = s.autoStart; });
+  optTop.onchange = () => window.widget.setAlwaysOnTop(optTop.checked);
+  optAuto.onchange = () => window.widget.setAutoStart(optAuto.checked);
+  document.getElementById('closeBtn').onclick = () => window.widget.quit();
+
+  // Висота вікна підлаштовується під вміст
+  const card = document.getElementById('card');
+  new ResizeObserver(() => window.widget.setHeight(card.offsetHeight + 16)).observe(card);
+}
+
+render();
+// Оновлення синхронно з початком секунди
+(function loop() { tick(); setTimeout(loop, 1000 - (Date.now() % 1000) + 5); })();
+</script>
+</body>
+</html>
