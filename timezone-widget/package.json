@@ -6,7 +6,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "dist:win": "electron-builder --win portable",
+    "dist:win": "electron-builder --win zip",
     "dist:mac": "electron-builder --mac dmg",
     "dist:linux": "electron-builder --linux AppImage"
   },
@@ -14,7 +14,7 @@
     "appId": "local.timezone.widget",
     "productName": "TimezoneWidget",
     "files": ["main.js", "preload.js", "index.html"],
-    "win": { "target": "portable", "signAndEditExecutable": false },
+    "win": { "target": "zip", "signAndEditExecutable": false },
     "mac": { "target": "dmg", "category": "public.app-category.utilities" }
   },
   "devDependencies": {

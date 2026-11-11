@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, screen } = require('electron');
+const { app, BrowserWindow, ipcMain, screen, protocol } = require('electron');
 const fs = require('fs');
 const path = require('path');
 
@@ -12,6 +12,13 @@ function saveState(patch) {
   try { fs.writeFileSync(statePath(), JSON.stringify(s)); } catch {}
   return s;
 }
+
+// Власний протокол app:// з явним типом text/html: не залежить від того,
+// як Windows визначає тип файлів (через це сторінка могла показуватись без стилів)
+protocol.registerSchemesAsPrivileged([
+  { scheme: 'app', privileges: { standard: true, secure: true, supportFetchAPI: true } },
+]);
+const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8' };
 
 // Тільки один екземпляр віджета
 if (!app.requestSingleInstanceLock()) app.quit();
@@ -41,7 +48,7 @@ function create() {
     alwaysOnTop: !!state.alwaysOnTop,
     webPreferences: { preload: path.join(__dirname, 'preload.js') },
   });
-  win.loadFile(path.join(__dirname, 'index.html'));
+  win.loadURL('app://widget/index.html');
 
   win.on('moved', () => {
     const [nx, ny] = win.getPosition();
@@ -71,5 +78,17 @@ ipcMain.on('set-auto-start', (_e, v) => {
 ipcMain.on('quit', () => app.quit());
 
 app.on('second-instance', () => { win?.show(); win?.focus(); });
-app.whenReady().then(create);
+app.whenReady().then(() => {
+  protocol.handle('app', req => {
+    const name = path.basename(new URL(req.url).pathname) || 'index.html';
+    const file = path.join(__dirname, name);
+    try {
+      const body = fs.readFileSync(file);
+      return new Response(body, { headers: { 'content-type': MIME[path.extname(name)] || 'application/octet-stream' } });
+    } catch {
+      return new Response('Not found', { status: 404 });
+    }
+  });
+  create();
+});
 app.on('window-all-closed', () => app.quit());
