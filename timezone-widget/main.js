@@ -41,7 +41,7 @@ function create() {
     alwaysOnTop: !!state.alwaysOnTop,
     webPreferences: { preload: path.join(__dirname, 'preload.js') },
   });
-  win.loadFile('index.html');
+  win.loadFile(path.join(__dirname, 'index.html'));
 
   win.on('moved', () => {
     const [nx, ny] = win.getPosition();
